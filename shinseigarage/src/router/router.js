@@ -3,7 +3,6 @@ import Home from '../views/ShinseiHome.vue';
 
 const routes = [
   { path: '/', component: Home },
-  // outras rotas...
 ];
 
 const router = createRouter({
