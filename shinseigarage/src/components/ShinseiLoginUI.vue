@@ -2,26 +2,43 @@
   <div class="signupSection">
     <div class="info">
       <h2>Bem Vindo(a) a Shinsei Garage </h2>
-      <i class="icon fas fa-car" aria-hidden="true"></i>
+      <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" />
       <p>Onde a velocidade se colide com a inovação</p>
+      <router-link to="/Signin">
+        <Button id="login-btn">Sign in</Button>
+      </router-link>
     </div>
     <form @submit.prevent="validateForm" class="signupForm">
-      <h2>Sign Up</h2>
+      <h2>Login</h2>
       <ul class="noBullet">
         <li class="inputContainer">
-          <label :class="{ active: username }" for="username">Username</label>
-          <input type="text" class="inputFields" id="username" v-model="username" @input="userNameValidation" required/>
-        </li>
-        <li class="inputContainer">
-          <label :class="{ active: password }" for="password">Password</label>
-          <input type="password" class="inputFields" id="password" v-model="password" @input="passwordValidation" required/>
-        </li>
-        <li class="inputContainer">
-          <label :class="{ active: email }" for="email">Email</label>
-          <input type="email" class="inputFields" id="email" v-model="email" required/>
-        </li>
-        <li id="center-btn">
-          <input type="submit" id="login-btn" value="Login" @click="Login">
+            <label :class="{ active: username || isFocused.username }" for="username">Username</label>
+            <input type="text" class="inputFields" id="username" 
+                  v-model="username" 
+                  @input="userNameValidation" 
+                  @focus="toggleLabel('username', true)" 
+                  @blur="toggleLabel('username', false)" required/>
+          </li>
+
+          <li class="inputContainer">
+            <label :class="{ active: password || isFocused.password }" for="password">Password</label>
+            <input type="password" class="inputFields" id="password" 
+                  v-model="password" 
+                  @input="passwordValidation" 
+                  @focus="toggleLabel('password', true)" 
+                  @blur="toggleLabel('password', false)" required/>
+          </li>
+
+          <li class="inputContainer">
+            <label :class="{ active: email || isFocused.email }" for="email">Email</label>
+            <input type="email" class="inputFields" id="email" 
+                  v-model="email" 
+                  @focus="toggleLabel('email', true)" 
+                  @blur="toggleLabel('email', false)" required/>
+          </li>
+            <li id="center-btn">
+              
+          <input type="submit" id="login-btn" value="Login" @click="SignIn()">
         </li>
       </ul>
     </form>
@@ -38,10 +55,16 @@ export default {
       password: "",
       email: "",
       alertRedInput: "#8C1010",
-      defaultInput: "rgba(10, 180, 180, 1)"
+      defaultInput: "rgba(10, 180, 180, 1)",
+      isFocused: {
+      username: false,
+      password: false,
+      email: false
+    }
     };
   },
   methods: {
+
     userNameValidation() {
       let issueArr = [];
       if (/[-!@#$%^&*()_+|~=`{}\]:";'<>?,.]/.test(this.username)) {
@@ -56,6 +79,10 @@ export default {
         usernameField.style.borderColor = this.defaultInput;
       }
     },
+    toggleLabel(field, status) {
+        this.isFocused[field] = status;
+    },
+
     passwordValidation() {
       let issueArr = [];
       if (!/^.{7,15}$/.test(this.password)) {
@@ -79,6 +106,7 @@ export default {
         passwordField.style.borderColor = this.defaultInput;
       }
     },
+
     emailValidation() {
     let issueArr = [];
     if (!this.email.includes("@")) {
@@ -97,12 +125,13 @@ export default {
       emailField.style.borderColor = this.defaultInput; // Restaura a borda
     }
   },
+  
     validateForm() {
       this.userNameValidation();
       this.passwordValidation();
       this.emailValidation()
     },
-    Login(){
+    SignIn(){
       this.validateForm()
       
     }
@@ -124,12 +153,13 @@ body {
   padding: 0;
   overflow: hidden;
   background-color: #000000;
-  background-image: url('https://source.unsplash.com/1600x900/?sports-car,night');
+  /* background-image: url('https://source.unsplash.com/1600x900/?sports-car,night'); */
   background-size: cover;
   background-position: center;
 }
 
 .signupSection {
+  background-color: #000000;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -222,6 +252,7 @@ body {
   padding: 10px 50px;
   cursor: pointer;
   transition: .4s;
+  margin: 4px;
   border-radius: 5px;
   &:hover {
     background: rgba(255, 0, 0, .8);
