@@ -152,6 +152,8 @@ export default {
 
     register() {
       this.validateForm();
+      
+      
     }
   }
 };

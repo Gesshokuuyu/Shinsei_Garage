@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/router'
 import Toast, { POSITION } from 'vue-toastification'
+import axios from './axios'; 
 import 'vue-toastification/dist/index.css'
 
 const toastOptions = {
@@ -26,6 +27,7 @@ library.add(faCar, faUser, faEnvelope, faLock,faGaugeHigh )
 
 const app = createApp(App)
 
+app.config.globalProperties.$axios = axios;
 app.use(router)
 app.use(Toast, toastOptions)
 

@@ -3,6 +3,7 @@
     <section class="et-hero-tabs">
       <h1>STICKY SLIDER NAV</h1>
       <h3>Sliding content with sticky tab nav</h3>
+
       <div class="et-hero-tabs-container" :class="{'et-hero-tabs-container--top': isSticky}">
         <a
           v-for="tab in tabs"
@@ -23,10 +24,24 @@
   </template>
   
   <script>
-  import { reactive, onMounted, onBeforeUnmount } from 'vue';
+  import { reactive, onMounted, onBeforeUnmount, ref } from 'vue';
+  import axios from 'axios';
   
   export default {
     setup() {
+
+      const users = ref([]);
+
+      axios.get('http://localhost:8000/usuarios')
+        .then(response => {
+          users.value = response.data;  // Atualizando o valor da referência
+          console.log(users.value);  // Acessando o valor de users
+        })
+        .catch(error => {
+          console.error('Erro ao buscar usuários:', error);
+        });
+
+
       const state = reactive({
         currentId: null,
         currentTab: null,
