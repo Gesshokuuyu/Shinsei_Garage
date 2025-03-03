@@ -6,13 +6,15 @@
         <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" class="icon pulse" />
       </div>
       <p class="fade-in">Onde a velocidade se colide com a inovação</p>
-      <router-link to="/Signin">
-        <button id="info-btn" class="glow-effect">
-          Sign in
-          <span class="btn-line"></span>
-        </button>
-      </router-link>
-    </div>
+      <transition name="fade">
+        <router-link to="/Signin">
+          <button id="info-btn" class="glow-effect">
+            Sign in
+            <span class="btn-line"></span>
+          </button>
+        </router-link>
+      </transition>
+      </div>
     <form @submit.prevent="validateForm" class="signupForm">
       <h2 class="form-title">Login</h2>
       <ul class="noBullet">
@@ -44,16 +46,11 @@
               @blur="toggleLabel('password', false)"
               required
             />
-            <font-awesome-icon
-              :icon="showPassword ? ['far', 'eye-slash'] : ['far', 'eye']"
-              class="password-toggle"
-              @click="showPassword = !showPassword"
-            />
+            <button type="button" class="password-toggle" @click="showPassword = !showPassword">
+              <font-awesome-icon :icon="showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']" />
+            </button>
           </div>
           <div class="password-strength" v-if="password">
-            <div class="strength-meter">
-              <div :class="['strength-bar', passwordStrengthClass]" :style="{ width: passwordStrength + '%' }"></div>
-            </div>
             <span class="strength-text">{{ passwordStrengthText }}</span>
           </div>
           <span class="validation-message" v-if="errorMessages.password">{{ errorMessages.password }}</span>
@@ -89,7 +86,7 @@
         </li>
         
         <li class="signup-link">
-          <p>Não tem uma conta? <router-link to="/register" class="register-link">Registre-se</router-link></p>
+          <p>Não tem uma conta? <router-link to="/Signin" class="register-link">Registre-se</router-link></p>
         </li>
       </ul>
     </form>
@@ -164,46 +161,26 @@ export default {
 
     passwordValidation() {
       let issueArr = [];
-      let strength = 0;
       
       // Validações
       if (!/^.{7,15}$/.test(this.password)) {
         issueArr.push("A senha deve ter entre 7-15 caracteres");
-      } else {
-        strength += 25;
-      }
+      } 
       
       if (!/\d/.test(this.password)) {
         issueArr.push("Deve conter um número");
-      } else {
-        strength += 25;
-      }
+      } 
       
       if (!/[a-z]/.test(this.password)) {
         issueArr.push("Deve conter uma letra minúscula");
-      } else {
-        strength += 25;
-      }
+      } 
       
       if (!/[A-Z]/.test(this.password)) {
         issueArr.push("Deve conter uma letra maiúscula");
-      } else {
-        strength += 25;
-      }
+      } 
       
       // Força da senha
-      this.passwordStrength = strength;
       
-      if (strength <= 25) {
-        this.passwordStrengthText = "Fraca";
-        this.passwordStrengthClass = "weak";
-      } else if (strength <= 75) {
-        this.passwordStrengthText = "Média";
-        this.passwordStrengthClass = "medium";
-      } else {
-        this.passwordStrengthText = "Forte";
-        this.passwordStrengthClass = "strong";
-      }
       
       const passwordField = document.getElementById("password");
       if (issueArr.length > 0) {
@@ -248,15 +225,12 @@ export default {
       
       this.isLoading = true;
       
-      // Simulação de login (substitua por sua lógica real de autenticação)
       setTimeout(() => {
         this.isLoading = false;
         
-        // Exemplo - substitua por verificação real
+
         if (this.email === "admin@shinsei.com" && this.password === "Admin123") {
           this.showNotificationMessage("Login realizado com sucesso!", "success");
-          // Aqui você redirecionaria para a página principal
-          // this.$router.push('/dashboard');
         } else {
           this.showNotificationMessage("Falha no login. Verifique suas credenciais.", "error");
         }
@@ -302,7 +276,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 800px;
-  height: 500px;
+  height: 550px;
   text-align: center;
   display: flex;
   color: white;
@@ -330,8 +304,8 @@ body {
 }
 
 .logo-container {
-  margin: 20px 0;
-  height: 100px;
+  margin: 20px 0 !important;
+  height: 100px !important;
 }
 
 .icon {
@@ -400,20 +374,23 @@ body {
 }
 
 .inputContainer label {
-  margin-left: 10px;
   position: absolute;
+  left: 10px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-30%);
+  font-size: 16px;
   color: #aaa;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   pointer-events: none;
 }
+
 
 .inputContainer label.active {
   top: -5px;
   font-size: 12px;
   color: rgba(255, 0, 0, 1);
   font-weight: 600;
+  /* margin-left: -50px; */
 }
 
 .inputFields {
@@ -444,7 +421,9 @@ body {
   position: absolute;
   right: 10px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-30%);
+  background: none;
+  border: none;
   color: #aaa;
   cursor: pointer;
   transition: color 0.3s;
@@ -513,7 +492,7 @@ body {
 
 .submit-btn {
   border: 1px solid rgba(255, 0, 0, 1);
-  background: rgba(20, 20, 20, .8);
+  background: rgba(20, 20, 20, .6) !important;
   font-size: 18px;
   color: white;
   padding: 12px 60px;
@@ -659,6 +638,7 @@ body {
 /* Registration link */
 .signup-link {
   margin-top: 15px;
+  padding-bottom:15px ;
   font-size: 14px;
   color: #aaa;
 }
@@ -764,6 +744,32 @@ body {
     width: 100%;
     padding: 30px 20px;
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.scale-enter-active, .scale-leave-active {
+  transition: all 0.5s;
+}
+.scale-enter, .scale-leave-to {
+  transform: scale(0.9);
+  opacity: 0;
 }
 
 @media screen and (max-width: 500px) {

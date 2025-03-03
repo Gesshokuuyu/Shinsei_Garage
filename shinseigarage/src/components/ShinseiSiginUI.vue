@@ -2,13 +2,18 @@
   <div class="signupSection">
     <div class="info">
       <h2>Bem Vindo(a) a Shinsei Garage</h2>
-      <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" class="icon" />
-      <p>Onde a velocidade se colide com a inovação</p>
+      <div class="logo-container">
+        <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" class="icon pulse" />
+      </div>
+      <p class="fade-in">Onde a velocidade se colide com a inovação</p>
       <transition name="fade">
         <div v-if="!formSubmitted">
           <router-link to="/Login">
-            <button id="login-btn" class="action-btn">Login</button>
-          </router-link>
+            <button id="info-btn" class="glow-effect">
+              Login
+              <span class="btn-line"></span>
+            </button>
+      </router-link>
         </div>
       </transition>
     </div>
@@ -35,12 +40,12 @@
       <transition name="slide-fade">
         <form v-if="formStep === 0" @submit.prevent="nextStep" class="step-form">
           <div class="inputContainer">
-            <label :class="{ active: name || isFocused.name }" for="name">Nome</label>
+            <label :class="{ active: Account.name || isFocused.name }" for="name">Nome</label>
             <input 
               type="text" 
               class="inputFields" 
               id="name" 
-              v-model="name" 
+              v-model="Account.name" 
               @focus="toggleLabel('name', true)" 
               @blur="toggleLabel('name', false)" 
               required 
@@ -53,12 +58,12 @@
           </div>
           
           <div class="inputContainer">
-            <label :class="{ active: username || isFocused.username }" for="username">Username</label>
+            <label :class="{ active: Account.username || isFocused.username }" for="username">Username</label>
             <input 
               type="text" 
               class="inputFields" 
               id="username" 
-              v-model="username" 
+              v-model="Account.username" 
               @input="userNameValidation" 
               @focus="toggleLabel('username', true)" 
               @blur="toggleLabel('username', false)" 
@@ -76,12 +81,12 @@
           </div>
           
           <div class="inputContainer">
-            <label :class="{ active: email || isFocused.email }" for="email">Email</label>
+            <label :class="{ active: Account.email || isFocused.email }" for="email">Email</label>
             <input 
               type="email" 
               class="inputFields" 
               id="email" 
-              v-model="email" 
+              v-model="Account.email" 
               @input="emailValidation"
               @focus="toggleLabel('email', true)" 
               @blur="toggleLabel('email', false)" 
@@ -111,12 +116,12 @@
       <transition name="slide-fade">
         <form v-if="formStep === 1" @submit.prevent="nextStep" class="step-form">
           <div class="inputContainer">
-            <label :class="{ active: password || isFocused.password }" for="password">Password</label>
+            <label :class="{ active: Account.password || isFocused.password }" for="password">Password</label>
             <input 
               type="password" 
               class="inputFields" 
               id="password" 
-              v-model="password" 
+              v-model="Account.password" 
               @input="passwordValidation" 
               @focus="toggleLabel('password', true)" 
               @blur="toggleLabel('password', false)" 
@@ -153,12 +158,12 @@
           </div>
           
           <div class="inputContainer">
-            <label :class="{ active: confirmPassword || isFocused.confirmPassword }" for="confirmPassword">Confirmar Senha</label>
+            <label :class="{ active: Account.confirmPassword || isFocused.confirmPassword }" for="confirmPassword">Confirmar Senha</label>
             <input 
               type="password" 
               class="inputFields" 
               id="confirmPassword" 
-              v-model="confirmPassword" 
+              v-model="Account.confirmPassword" 
               @input="confirmPasswordValidation" 
               @focus="toggleLabel('confirmPassword', true)" 
               @blur="toggleLabel('confirmPassword', false)" 
@@ -196,19 +201,19 @@
           <div class="review-info">
             <div class="review-item">
               <span class="review-label">Nome:</span>
-              <span class="review-value">{{ name }}</span>
+              <span class="review-value">{{ Account.name }}</span>
             </div>
             <div class="review-item">
               <span class="review-label">Username:</span>
-              <span class="review-value">{{ username }}</span>
+              <span class="review-value">{{ Account.username }}</span>
             </div>
             <div class="review-item">
               <span class="review-label">Email:</span>
-              <span class="review-value">{{ email }}</span>
+              <span class="review-value">{{ Account.email }}</span>
             </div>
             <div class="review-item">
               <span class="review-label">Password:</span>
-              <span class="review-value">••••••••</span>
+              <span class="review-value">{{ Account.password }}</span>
             </div>
           </div>
           
@@ -218,7 +223,7 @@
           </div>
           
           <div class="btn-container">
-            <button type="button" class="action-btn back-btn" @click="formStep = 1">
+            <button type="button" class="action-btn back-btn" @click="formStep = 1, createAccount()">
               <font-awesome-icon :icon="['fas', 'arrow-left']" />
               Voltar
             </button>
@@ -241,12 +246,12 @@
       <div v-if="formSubmitted" class="success-screen">
         <font-awesome-icon :icon="['fas', 'check-circle']" size="5x" class="success-icon" />
         <h2>Registro Completo!</h2>
-        <p>Bem-vindo à Shinsei Garage, {{ name }}!</p>
+        <p>Bem-vindo à Shinsei Garage, {{ Account.name }}!</p>
         <p class="sub-text">Sua conta foi criada com sucesso.</p>
-        <router-link to="/dashboard">
+        <router-link to="/Home">
           <button class="action-btn dashboard-btn">
             <font-awesome-icon :icon="['fas', 'tachometer-alt']" />
-            Ir para o Dashboard
+            Ir para a Home
           </button>
         </router-link>
       </div>
@@ -262,6 +267,13 @@ export default {
       formStep: 0,
       formSubmitted: false,
       termsAgreed: false,
+      Account:{
+        name: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+        email: "",
+      },
       name: "",
       username: "",
       password: "",
@@ -290,27 +302,27 @@ export default {
   },
   computed: {
     canProceedStep1() {
-      return this.name.length > 0 && this.usernameValid && this.emailValid;
+      return this.Account.name.length > 0 && this.usernameValid && this.emailValid;
     },
     canProceedStep2() {
       return this.passwordValid && this.passwordsMatch;
     },
     passwordStrength() {
-      if (this.password.length === 0) return 0;
+      if (this.Account.password.length === 0) return 0;
       
       let strength = 0;
       
       // Length check
-      if (this.password.length >= 7) strength += 25;
+      if (this.Account.password.length >= 7) strength += 25;
       
       // Contains number
-      if (/\d/.test(this.password)) strength += 25;
+      if (/\d/.test(this.Account.password)) strength += 25;
       
       // Contains lowercase
-      if (/[a-z]/.test(this.password)) strength += 25;
+      if (/[a-z]/.test(this.Account.password)) strength += 25;
       
       // Contains uppercase
-      if (/[A-Z]/.test(this.password)) strength += 25;
+      if (/[A-Z]/.test(this.Account.password)) strength += 25;
       
       return strength;
     },
@@ -336,7 +348,7 @@ export default {
       this.errors.username = [];
       this.usernameValid = true;
       
-      if (this.username.length < 3) {
+      if (this.Account.username.length < 3) {
         this.errors.username.push("Nome de usuário deve ter pelo menos 3 caracteres");
         this.usernameValid = false;
       }
@@ -353,22 +365,22 @@ export default {
       this.errors.password = [];
       this.passwordValid = true;
       
-      if (!/^.{7,15}$/.test(this.password)) {
+      if (!/^.{7,15}$/.test(this.Account.password)) {
         this.errors.password.push("A senha deve ter entre 7-15 caracteres.");
         this.passwordValid = false;
       }
       
-      if (!/\d/.test(this.password)) {
+      if (!/\d/.test(this.Account.password)) {
         this.errors.password.push("Deve conter um número.");
         this.passwordValid = false;
       }
       
-      if (!/[a-z]/.test(this.password)) {
+      if (!/[a-z]/.test(this.Account.password)) {
         this.errors.password.push("Deve conter uma letra minúscula.");
         this.passwordValid = false;
       }
       
-      if (!/[A-Z]/.test(this.password)) {
+      if (!/[A-Z]/.test(this.Account.password)) {
         this.errors.password.push("Deve conter uma letra maiúscula.");
         this.passwordValid = false;
       }
@@ -381,7 +393,7 @@ export default {
       this.errors.confirmPassword = [];
       this.passwordsMatch = true;
       
-      if (this.confirmPassword !== this.password) {
+      if (this.Account.confirmPassword !== this.Account.password) {
         this.errors.confirmPassword.push("As senhas não coincidem.");
         this.passwordsMatch = false;
       }
@@ -393,12 +405,12 @@ export default {
       this.errors.email = [];
       this.emailValid = true;
       
-      if (!this.email.includes("@")) {
+      if (!this.Account.email.includes("@")) {
         this.errors.email.push("Email deve conter '@'.");
         this.emailValid = false;
       }
       
-      if (!this.email.endsWith(".com")) {
+      if (!this.Account.email.endsWith(".com")) {
         this.errors.email.push("Email deve terminar com '.com'.");
         this.emailValid = false;
       }
@@ -431,6 +443,10 @@ export default {
         this.formStep = step;
       }
     },
+
+    createAccount(){
+      
+    },
     
     submitForm() {
       if (this.termsAgreed) {
@@ -444,9 +460,8 @@ export default {
         setTimeout(() => {
           document.body.removeChild(loadingOverlay);
           this.formSubmitted = true;
-          
-          // Aqui você adicionaria a lógica para enviar os dados ao servidor
-          // this.$emit('user-registered', { name: this.name, email: this.email });
+          this.createAccount()  
+        
         }, 1500);
       }
     }
@@ -471,6 +486,63 @@ body {
   background-color: #000000;
   background-size: cover;
   background-position: center;
+}
+
+.icon {
+  color: rgba(255, 0, 0, 1);
+  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.glow-effect {
+  position: relative;
+}
+
+.btn-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: rgba(255, 0, 0, 1);
+  transition: width 0.3s ease;
+}
+
+#info-btn {
+  border: 1px solid rgba(255, 0, 0, 0.8);
+  background: rgba(30, 30, 30, .8);
+  font-size: 16px;
+  color: white;
+  padding: 10px 40px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.logo-container {
+  margin: 20px 0;
+  height: 100px;
 }
 
 .signupSection {
@@ -506,6 +578,10 @@ body {
   margin-bottom: 20px;
 }
 
+.fade-in {
+  animation: fadeIn 1.5s ease;
+}
+
 .info p {
   font-size: 18px;
   padding: 20px 10px;
@@ -518,15 +594,13 @@ body {
 }
 
 .signupForm {
-  width: 55%;
-  padding: 30px 0;
+  width: 70%;
+  padding: 30px 20px;
   background: rgba(20, 20, 20, .9);
   transition: .2s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  overflow-y: auto;
 }
 
 .signupForm h2 {
@@ -590,33 +664,41 @@ body {
 .inputContainer {
   position: relative;
   margin-bottom: 25px;
-  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.inputContainer:hover label {
+  color: rgba(255, 0, 0, 0.8);
 }
 
 .inputContainer label {
-  margin-left: 10px;
   position: absolute;
+  left: 10px;
   top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  transition: all 0.3s;
+  transform: translateY(-30%);
+  font-size: 16px;
+  color: #aaa;
+  transition: all 0.3s ease;
   pointer-events: none;
 }
 
+
 .inputContainer label.active {
-  top: -10px;
+  top: -5px;
   font-size: 12px;
   color: rgba(255, 0, 0, 1);
+  font-weight: 600;
+  /* margin-left: -50px; */
 }
 
 .inputFields {
-  margin: 5px 0;
+  margin: 15px 0 5px;
   font-size: 16px;
   padding: 15px 10px;
   width: 100%;
-  border: 1px solid rgba(255, 0, 0, 1);
+  border: 1px solid rgba(255, 0, 0, 0.5);
   border-radius: 5px;
-  background: rgba(30, 30, 30, .6);
+  background: rgba(20, 20, 20, .6);
   color: white;
   outline: none;
   transition: all 0.3s ease;
@@ -652,6 +734,10 @@ body {
 .password-strength {
   width: 100%;
   margin-bottom: 15px;
+}
+
+#info-btn:hover .btn-line {
+  width: 100%;
 }
 
 .strength-bar {
@@ -806,6 +892,7 @@ body {
 
 .dashboard-btn {
   padding: 12px 25px;
+  text-transform: none;
 }
 
 .dashboard-btn svg {

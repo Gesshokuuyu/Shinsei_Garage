@@ -21,9 +21,9 @@ const toastOptions = {
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { faCar, faUser, faEnvelope, faLock,faGaugeHigh  } from '@fortawesome/free-solid-svg-icons'
+import { faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faCar, faUser, faEnvelope, faLock,faGaugeHigh )
+library.add(faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash);
 
 const app = createApp(App)
 
