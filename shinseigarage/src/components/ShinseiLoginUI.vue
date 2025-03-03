@@ -1,52 +1,105 @@
 <template>
   <div class="signupSection">
     <div class="info">
-      <h2>Bem Vindo(a) a Shinsei Garage </h2>
-      <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" />
-      <p>Onde a velocidade se colide com a inovação</p>
+      <h2>Bem Vindo(a) à Shinsei Garage</h2>
+      <div class="logo-container">
+        <font-awesome-icon :icon="['fas', 'gauge-high']" size="6x" class="icon pulse" />
+      </div>
+      <p class="fade-in">Onde a velocidade se colide com a inovação</p>
       <router-link to="/Signin">
-        <Button id="login-btn">Sign in</Button>
+        <button id="info-btn" class="glow-effect">
+          Sign in
+          <span class="btn-line"></span>
+        </button>
       </router-link>
     </div>
     <form @submit.prevent="validateForm" class="signupForm">
-      <h2>Login</h2>
+      <h2 class="form-title">Login</h2>
       <ul class="noBullet">
         <li class="inputContainer">
-            <label :class="{ active: username || isFocused.username }" for="username">Username</label>
-            <input type="text" class="inputFields" id="username" 
-                  v-model="username" 
-                  @input="userNameValidation" 
-                  @focus="toggleLabel('username', true)" 
-                  @blur="toggleLabel('username', false)" required/>
-          </li>
+          <label :class="{ active: username || isFocused.username }" for="username">Username</label>
+          <input
+            type="text"
+            class="inputFields"
+            id="username"
+            v-model="username"
+            @input="userNameValidation"
+            @focus="toggleLabel('username', true)"
+            @blur="toggleLabel('username', false)"
+            required
+          />
+          <span class="validation-message" v-if="errorMessages.username">{{ errorMessages.username }}</span>
+        </li>
 
-          <li class="inputContainer">
-            <label :class="{ active: password || isFocused.password }" for="password">Password</label>
-            <input type="password" class="inputFields" id="password" 
-                  v-model="password" 
-                  @input="passwordValidation" 
-                  @focus="toggleLabel('password', true)" 
-                  @blur="toggleLabel('password', false)" required/>
-          </li>
+        <li class="inputContainer">
+          <label :class="{ active: password || isFocused.password }" for="password">Password</label>
+          <div class="password-container">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              class="inputFields"
+              id="password"
+              v-model="password"
+              @input="passwordValidation"
+              @focus="toggleLabel('password', true)"
+              @blur="toggleLabel('password', false)"
+              required
+            />
+            <font-awesome-icon
+              :icon="showPassword ? ['far', 'eye-slash'] : ['far', 'eye']"
+              class="password-toggle"
+              @click="showPassword = !showPassword"
+            />
+          </div>
+          <div class="password-strength" v-if="password">
+            <div class="strength-meter">
+              <div :class="['strength-bar', passwordStrengthClass]" :style="{ width: passwordStrength + '%' }"></div>
+            </div>
+            <span class="strength-text">{{ passwordStrengthText }}</span>
+          </div>
+          <span class="validation-message" v-if="errorMessages.password">{{ errorMessages.password }}</span>
+        </li>
 
-          <li class="inputContainer">
-            <label :class="{ active: email || isFocused.email }" for="email">Email</label>
-            <input type="email" class="inputFields" id="email" 
-                  v-model="email" 
-                  @focus="toggleLabel('email', true)" 
-                  @blur="toggleLabel('email', false)" required/>
-          </li>
-            <li id="center-btn">
-              
-          <input type="submit" id="login-btn" value="Login" @click="SignIn()">
+        <li class="inputContainer">
+          <label :class="{ active: email || isFocused.email }" for="email">Email</label>
+          <input
+            type="email"
+            class="inputFields"
+            id="email"
+            v-model="email"
+            @input="emailValidation"
+            @focus="toggleLabel('email', true)"
+            @blur="toggleLabel('email', false)"
+            required
+          />
+          <span class="validation-message" v-if="errorMessages.email">{{ errorMessages.email }}</span>
+        </li>
+
+        <li id="center-btn">
+          <button
+            type="submit"
+            id="login-btn"
+            class="submit-btn"
+            :class="{ 'btn-loading': isLoading }"
+            @click="signIn"
+            :disabled="isLoading || !isFormValid"
+          >
+            <span v-if="!isLoading">Login</span>
+            <span v-else class="loader"></span>
+          </button>
+        </li>
+        
+        <li class="signup-link">
+          <p>Não tem uma conta? <router-link to="/register" class="register-link">Registre-se</router-link></p>
         </li>
       </ul>
     </form>
+    <div class="notification" :class="{ show: showNotification, success: notificationType === 'success', error: notificationType === 'error' }">
+      {{ notificationMessage }}
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "ShinseiLoginUI",
   data() {
@@ -57,95 +110,180 @@ export default {
       alertRedInput: "#8C1010",
       defaultInput: "rgba(10, 180, 180, 1)",
       isFocused: {
-      username: false,
-      password: false,
-      email: false
-    }
+        username: false,
+        password: false,
+        email: false
+      },
+      errorMessages: {
+        username: "",
+        password: "",
+        email: ""
+      },
+      isLoading: false,
+      showPassword: false,
+      passwordStrength: 0,
+      passwordStrengthText: "",
+      passwordStrengthClass: "",
+      showNotification: false,
+      notificationMessage: "",
+      notificationType: "success"
     };
   },
+  computed: {
+    isFormValid() {
+      return (
+        this.username && 
+        this.password && 
+        this.email && 
+        !this.errorMessages.username && 
+        !this.errorMessages.password && 
+        !this.errorMessages.email
+      );
+    }
+  },
   methods: {
-
     userNameValidation() {
       let issueArr = [];
       if (/[-!@#$%^&*()_+|~=`{}\]:";'<>?,.]/.test(this.username)) {
-        issueArr.push("No special characters!");
+        issueArr.push("Sem caracteres especiais!");
       }
+      
       const usernameField = document.getElementById("username");
       if (issueArr.length > 0) {
-        usernameField.setCustomValidity(issueArr.join("\n"));
+        this.errorMessages.username = issueArr.join(", ");
         usernameField.style.borderColor = this.alertRedInput;
       } else {
-        usernameField.setCustomValidity("");
+        this.errorMessages.username = "";
         usernameField.style.borderColor = this.defaultInput;
       }
     },
+    
     toggleLabel(field, status) {
-        this.isFocused[field] = status;
+      this.isFocused[field] = status;
     },
 
     passwordValidation() {
       let issueArr = [];
+      let strength = 0;
+      
+      // Validações
       if (!/^.{7,15}$/.test(this.password)) {
-        issueArr.push("A senha deve ter entre 7-15 caracteres.");
+        issueArr.push("A senha deve ter entre 7-15 caracteres");
+      } else {
+        strength += 25;
       }
+      
       if (!/\d/.test(this.password)) {
-        issueArr.push("Deve conter um número.");
+        issueArr.push("Deve conter um número");
+      } else {
+        strength += 25;
       }
+      
       if (!/[a-z]/.test(this.password)) {
-        issueArr.push("Deve conter uma letra minuscula.");
+        issueArr.push("Deve conter uma letra minúscula");
+      } else {
+        strength += 25;
       }
+      
       if (!/[A-Z]/.test(this.password)) {
-        issueArr.push("Deve conter uma letra maiuscula.");
+        issueArr.push("Deve conter uma letra maiúscula");
+      } else {
+        strength += 25;
       }
+      
+      // Força da senha
+      this.passwordStrength = strength;
+      
+      if (strength <= 25) {
+        this.passwordStrengthText = "Fraca";
+        this.passwordStrengthClass = "weak";
+      } else if (strength <= 75) {
+        this.passwordStrengthText = "Média";
+        this.passwordStrengthClass = "medium";
+      } else {
+        this.passwordStrengthText = "Forte";
+        this.passwordStrengthClass = "strong";
+      }
+      
       const passwordField = document.getElementById("password");
       if (issueArr.length > 0) {
-        passwordField.setCustomValidity(issueArr.join("\n"));
+        this.errorMessages.password = issueArr.join(", ");
         passwordField.style.borderColor = this.alertRedInput;
       } else {
-        passwordField.setCustomValidity("");
+        this.errorMessages.password = "";
         passwordField.style.borderColor = this.defaultInput;
       }
     },
 
     emailValidation() {
-    let issueArr = [];
-    if (!this.email.includes("@")) {
-      issueArr.push("Deve conter '@'.");
-    }
-    if (!this.email.endsWith(".com")) {
-      issueArr.push("Deve terminar com '.com'.");
-    }
+      let issueArr = [];
+      
+      if (!this.email.includes("@")) {
+        issueArr.push("Deve conter '@'");
+      }
+      
+      if (!this.email.endsWith(".com")) {
+        issueArr.push("Deve terminar com '.com'");
+      }
 
-    const emailField = document.getElementById("email");
-    if (issueArr.length > 0) {
-      emailField.setCustomValidity(issueArr.join("\n"));
-      emailField.style.borderColor = this.alertRedInput; // Muda a borda para vermelho
-    } else {
-      emailField.setCustomValidity("");
-      emailField.style.borderColor = this.defaultInput; // Restaura a borda
-    }
-  },
-  
+      const emailField = document.getElementById("email");
+      if (issueArr.length > 0) {
+        this.errorMessages.email = issueArr.join(", ");
+        emailField.style.borderColor = this.alertRedInput;
+      } else {
+        this.errorMessages.email = "";
+        emailField.style.borderColor = this.defaultInput;
+      }
+    },
+    
     validateForm() {
       this.userNameValidation();
       this.passwordValidation();
-      this.emailValidation()
+      this.emailValidation();
+      return this.isFormValid;
     },
-    SignIn(){
-      this.validateForm()
+    
+    signIn() {
+      if (!this.validateForm()) return;
       
+      this.isLoading = true;
+      
+      // Simulação de login (substitua por sua lógica real de autenticação)
+      setTimeout(() => {
+        this.isLoading = false;
+        
+        // Exemplo - substitua por verificação real
+        if (this.email === "admin@shinsei.com" && this.password === "Admin123") {
+          this.showNotificationMessage("Login realizado com sucesso!", "success");
+          // Aqui você redirecionaria para a página principal
+          // this.$router.push('/dashboard');
+        } else {
+          this.showNotificationMessage("Falha no login. Verifique suas credenciais.", "error");
+        }
+      }, 1500);
+    },
+    
+    showNotificationMessage(message, type) {
+      this.notificationMessage = message;
+      this.notificationType = type;
+      this.showNotification = true;
+      
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     }
-
-  },
+  }
 };
 </script>
 
+
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
 * {
   font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
 }
 
 body {
@@ -153,7 +291,6 @@ body {
   padding: 0;
   overflow: hidden;
   background-color: #000000;
-  /* background-image: url('https://source.unsplash.com/1600x900/?sports-car,night'); */
   background-size: cover;
   background-position: center;
 }
@@ -165,7 +302,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 800px;
-  height: 450px;
+  height: 500px;
   text-align: center;
   display: flex;
   color: white;
@@ -174,89 +311,473 @@ body {
   overflow: hidden;
 }
 
+/* Left side styling */
 .info {
   width: 45%;
   background: rgba(30, 30, 30, .9);
   padding: 30px 0;
   border-right: 5px solid rgba(255, 0, 0, .8);
-  h2 {
-    padding-top: 30px;
-    font-weight: 300;
-  }
-  p {
-    font-size: 18px;
-  }
-  .icon {
-    font-size: 8em;
-    padding: 20px 0;
-    color: rgba(255, 0, 0, 1);
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
+.info h2 {
+  font-weight: 300;
+  margin-bottom: 20px;
+  animation: fadeSlideIn 1s ease;
+}
+
+.logo-container {
+  margin: 20px 0;
+  height: 100px;
+}
+
+.icon {
+  color: rgba(255, 0, 0, 1);
+  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.info p {
+  font-size: 18px;
+  padding: 0 20px;
+  margin-bottom: 30px;
+}
+
+.fade-in {
+  animation: fadeIn 1.5s ease;
+}
+
+/* Form styling */
 .signupForm {
   width: 70%;
-  padding: 30px 0;
+  padding: 30px 20px;
   background: rgba(20, 20, 20, .9);
   transition: .2s;
-  h2 {
-    font-weight: 300;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.inputContainer {
+.form-title {
+  font-weight: 300;
+  margin-bottom: 25px;
   position: relative;
+  animation: slideDown 0.5s ease;
 }
 
-.inputContainer label {
-  margin-left: 3px;
+.form-title:after {
+  content: '';
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  transition: all 0.3s;
-  pointer-events: none;
-}
-
-.inputContainer label.active {
-  top: 5px;
-  font-size: 12px;
-  color: rgba(255, 0, 0, 1);
-}
-
-.inputFields {
-
-  margin: 15px 0;
-  font-size: 16px;
-  padding: 10px;
-  width: 250px;
-  border: 1px solid rgba(255, 0, 0, 1);
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  background: rgba(20, 20, 20, .2);
-  color: white;
-  outline: none;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background: rgba(255, 0, 0, 0.8);
 }
 
 .noBullet {
   list-style-type: none;
   padding: 0;
+  width: 80%;
 }
 
-#login-btn {
-  border: 1px solid rgba(255, 0, 0, 1);
+/* Input styling */
+.inputContainer {
+  position: relative;
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.inputContainer:hover label {
+  color: rgba(255, 0, 0, 0.8);
+}
+
+.inputContainer label {
+  margin-left: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.inputContainer label.active {
+  top: -5px;
+  font-size: 12px;
+  color: rgba(255, 0, 0, 1);
+  font-weight: 600;
+}
+
+.inputFields {
+  margin: 15px 0 5px;
+  font-size: 16px;
+  padding: 15px 10px;
+  width: 100%;
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  border-radius: 5px;
   background: rgba(20, 20, 20, .6);
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.inputFields:focus {
+  border-color: rgba(255, 0, 0, 1);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+}
+
+/* Password field styling */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.password-toggle:hover {
+  color: rgba(255, 0, 0, 0.8);
+}
+
+.password-strength {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 12px;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.strength-meter {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.strength-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.weak {
+  background-color: #ff4747;
+}
+
+.medium {
+  background-color: #ffa500;
+}
+
+.strong {
+  background-color: #47ff47;
+}
+
+.strength-text {
+  color: #aaa;
+  font-size: 11px;
+}
+
+/* Validation messages */
+.validation-message {
+  color: #ff4747;
+  font-size: 11px;
+  text-align: left;
+  display: block;
+  padding-left: 5px;
+  opacity: 0;
+  height: 0;
+  animation: slideDown 0.3s ease forwards;
+}
+
+/* Button styling */
+#center-btn {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  border: 1px solid rgba(255, 0, 0, 1);
+  background: rgba(20, 20, 20, .8);
   font-size: 18px;
   color: white;
-  margin-top: 20px;
-  padding: 10px 50px;
+  padding: 12px 60px;
   cursor: pointer;
-  transition: .4s;
-  margin: 4px;
+  transition: all 0.4s ease;
   border-radius: 5px;
-  &:hover {
-    background: rgba(255, 0, 0, .8);
-    padding: 10px 80px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.submit-btn:hover {
+  background: rgba(255, 0, 0, .7);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(100, 100, 100, 0.5);
+}
+
+/* Loading spinner */
+.btn-loading {
+  padding: 12px 40px;
+}
+
+.loader {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* Info button styling */
+#info-btn {
+  border: 1px solid rgba(255, 0, 0, 0.8);
+  background: rgba(30, 30, 30, .8);
+  font-size: 16px;
+  color: white;
+  padding: 10px 40px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect:before {
+  content: '';
+  background: linear-gradient(45deg, #ff0000, #ff7300, #ff0000);
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+.glow-effect:hover:before {
+  opacity: 1;
+}
+
+.glow-effect:active {
+  color: white;
+}
+
+.glow-effect:after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(30, 30, 30, .8);
+  left: 0;
+  top: 0;
+  border-radius: 5px;
+}
+
+.btn-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: rgba(255, 0, 0, 1);
+  transition: width 0.3s ease;
+}
+
+#info-btn:hover .btn-line {
+  width: 100%;
+}
+
+/* Notification styling */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: -300px;
+  width: 280px;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+  font-weight: 400;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: right 0.5s ease;
+  z-index: 1000;
+}
+
+.notification.show {
+  right: 20px;
+}
+
+.notification.success {
+  background: linear-gradient(45deg, #28a745, #218838);
+  border-left: 5px solid #1e7e34;
+}
+
+.notification.error {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  border-left: 5px solid #bd2130;
+}
+
+/* Registration link */
+.signup-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.register-link {
+  color: rgba(255, 0, 0, 0.8);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.register-link:hover {
+  color: rgba(255, 0, 0, 1);
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    height: auto;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Responsivo */
+@media screen and (max-width: 850px) {
+  .signupSection {
+    width: 95%;
+    height: auto;
+    flex-direction: column;
+  }
+  
+  .info {
+    width: 100%;
+    border-right: none;
+    border-bottom: 5px solid rgba(255, 0, 0, .8);
+    padding: 20px 0;
+  }
+  
+  .signupForm {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .noBullet {
+    width: 95%;
+  }
+  
+  .inputFields {
+    font-size: 14px;
+  }
+  
+  .submit-btn {
+    padding: 10px 40px;
+    font-size: 16px;
   }
 }
 </style>
