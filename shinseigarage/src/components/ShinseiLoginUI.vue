@@ -41,7 +41,6 @@
               class="inputFields"
               id="password"
               v-model="password"
-              @input="passwordValidation"
               @focus="toggleLabel('password', true)"
               @blur="toggleLabel('password', false)"
               required
@@ -53,7 +52,6 @@
           <div class="password-strength" v-if="password">
             <span class="strength-text">{{ passwordStrengthText }}</span>
           </div>
-          <span class="validation-message" v-if="errorMessages.password">{{ errorMessages.password }}</span>
         </li>
 
         <li class="inputContainer">
@@ -131,10 +129,7 @@ export default {
       return (
         this.username && 
         this.password && 
-        this.email && 
-        !this.errorMessages.username && 
-        !this.errorMessages.password && 
-        !this.errorMessages.email
+        this.email 
       );
     }
   },

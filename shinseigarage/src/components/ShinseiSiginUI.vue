@@ -18,7 +18,6 @@
       </transition>
     </div>
     
-    <!-- Step indicator -->
     <div v-if="!formSubmitted" class="signupForm">
       <h2>Create Account</h2>
       <div class="step-indicator">
@@ -118,7 +117,7 @@
           <div class="inputContainer">
             <label :class="{ active: Account.password || isFocused.password }" for="password">Password</label>
             <input 
-              type="password" 
+              :type="showPassword ? 'text' : 'password'"
               class="inputFields" 
               id="password" 
               v-model="Account.password" 
@@ -127,6 +126,9 @@
               @blur="toggleLabel('password', false)" 
               required 
             />
+            <button type="button" class="password-toggle" @click="showPassword = !showPassword">
+              <font-awesome-icon :icon="showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']" />
+            </button>
             <font-awesome-icon 
               v-if="password.length > 0" 
               :icon="['fas', passwordValid ? 'check' : 'exclamation-circle']" 
@@ -136,7 +138,7 @@
           </div>
           
           <!-- Password strength meter -->
-          <div v-if="password.length > 0" class="password-strength">
+          <div v-if="Account.password.length > 0" class="password-strength">
             <div class="strength-bar">
               <div 
                 class="strength-progress" 
@@ -160,7 +162,7 @@
           <div class="inputContainer">
             <label :class="{ active: Account.confirmPassword || isFocused.confirmPassword }" for="confirmPassword">Confirmar Senha</label>
             <input 
-              type="password" 
+            :type="showConfirmPassword ? 'text' : 'password'"
               class="inputFields" 
               id="confirmPassword" 
               v-model="Account.confirmPassword" 
@@ -169,6 +171,9 @@
               @blur="toggleLabel('confirmPassword', false)" 
               required 
             />
+            <button type="button" class="password-toggle" @click="showConfirmPassword = !showConfirmPassword">
+              <font-awesome-icon :icon="showConfirmPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']" />
+            </button>
             <font-awesome-icon 
               v-if="confirmPassword.length > 0" 
               :icon="['fas', passwordsMatch ? 'check' : 'times']" 
@@ -218,8 +223,11 @@
           </div>
           
           <div class="terms-container">
+            
             <input type="checkbox" id="termsAgree" v-model="termsAgreed">
-            <label for="termsAgree" class="terms-label">Eu concordo com os Termos e Condições</label>
+            <label for="termsAgree" class="terms-label">Eu concordo com os 
+              <span class="terms-link" @click="showTermsModal = true">Termos e Condições</span>
+            </label>
           </div>
           
           <div class="btn-container">
@@ -257,6 +265,17 @@
       </div>
     </transition>
   </div>
+  <div v-if="showTermsModal" class="modal-overlay">
+    <div class="modal">
+      <h2>Termos e Condições</h2>
+      <p>
+        Aqui estão os termos de uso... (adicione o conteúdo real aqui).
+      </p>
+      <div class="btn-container">
+        <button @click="showTermsModal = false" class="action-btn center-terms">Fechar</button>
+      </div>
+    </div>
+  </div>
 </template>
   
 <script>
@@ -274,6 +293,7 @@ export default {
         confirmPassword: "",
         email: "",
       },
+      showTermsModal: true,
       name: "",
       username: "",
       password: "",
@@ -283,6 +303,8 @@ export default {
       defaultInput: "rgba(10, 180, 180, 1)",
       usernameValid: false,
       passwordValid: false,
+      showPassword: false,
+      showConfirmPassword: false,
       emailValid: false,
       passwordsMatch: false,
       errors: {
@@ -450,7 +472,7 @@ export default {
     
     submitForm() {
       if (this.termsAgreed) {
-        // Show loading state
+        console.log(this.Account)
         const loadingOverlay = document.createElement('div');
         loadingOverlay.className = 'loading-overlay';
         loadingOverlay.innerHTML = '<div class="loader"></div>';
@@ -495,6 +517,34 @@ body {
 
 .pulse {
   animation: pulse 2s infinite;
+}
+
+.terms-link {
+  color: rgba(255, 0, 0, 1);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: rgba(30, 30, 30, 0.911);
+  color: rgba(194, 15, 15, 0.87);
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 8px 8px 8px 30px;
+  width: 400px;
+  text-align: center;
 }
 
 @keyframes pulse {
@@ -627,6 +677,9 @@ body {
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+.center-terms{
+ margin-left: 120px !important;
 }
 
 .step:not(:last-child):after {
@@ -811,6 +864,22 @@ body {
 
 .back-btn, .next-btn {
   min-width: 100px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-30%);
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.password-toggle:hover {
+  color: rgba(255, 0, 0, 0.8);
 }
 
 .back-btn svg, .next-btn svg {
