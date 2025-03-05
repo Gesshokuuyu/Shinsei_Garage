@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia';
 import App from './App.vue'
 import router from './router/router'
 import Toast, { POSITION } from 'vue-toastification'
@@ -26,11 +27,12 @@ import { faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash,faArr
 library.add(faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash, faArrowRight, faArrowLeft,faTimes, faUserPlus    );
 
 const app = createApp(App)
+const pinia = createPinia();
 
 app.config.globalProperties.$axios = axios;
 app.use(router)
 app.use(Toast, toastOptions)
-
+app.use(pinia);
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app')

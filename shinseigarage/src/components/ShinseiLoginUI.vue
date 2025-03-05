@@ -75,7 +75,7 @@
             id="login-btn"
             class="submit-btn"
             :class="{ 'btn-loading': isLoading }"
-            @click="signIn"
+            @click="Login()"
             :disabled="isLoading || !isFormValid"
           >
             <span v-if="!isLoading">Login</span>
@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import api from '@/axios'; 
+import { useUserStore } from '@/stores/userStore';
 export default {
   name: "ShinseiLoginUI",
   data() {
@@ -114,6 +116,7 @@ export default {
         password: "",
         email: ""
       },
+      user: {},
       isLoading: false,
       showPassword: false,
       passwordStrength: 0,
@@ -215,22 +218,55 @@ export default {
       return this.isFormValid;
     },
     
-    signIn() {
-      if (!this.validateForm()) return;
-      
-      this.isLoading = true;
-      
-      setTimeout(() => {
-        this.isLoading = false;
-        
+    async Login() {
+  
+  if (!this.validateForm()) return;
 
-        if (this.email === "admin@shinsei.com" && this.password === "Admin123") {
-          this.showNotificationMessage("Login realizado com sucesso!", "success");
-        } else {
-          this.showNotificationMessage("Falha no login. Verifique suas credenciais.", "error");
-        }
-      }, 1500);
-    },
+  
+  this.isLoading = true;
+
+  
+  this.user = {
+    'email': this.email,
+    'password': this.password,
+    'userName': this.username
+  };
+
+  
+  this.loadingOverlay = document.createElement('div');
+  this.loadingOverlay.className = 'loading-overlay';
+  this.loadingOverlay.innerHTML = '<div class="loader"></div>';
+  document.body.appendChild(this.loadingOverlay);
+  const userStore = useUserStore();
+
+  try {
+    
+    const response = await api.post('/account/login', this.user);
+    
+    console.log('Resposta da API:', response.data);
+
+    if (response.data.success) {
+      this.showNotificationMessage("Login realizado com sucesso!", "success");
+      userStore.login(response.data);  
+      this.$router.push('/home');
+    } else {
+      this.showNotificationMessage(response.data.error, "error");
+    }
+
+  } catch (error) {
+    
+    console.error('Erro ao realizar login:', error);
+    this.showNotificationMessage('Usuário não encontrado', 'error');
+  } finally {
+    
+    if (this.loadingOverlay && document.body.contains(this.loadingOverlay)) {
+      document.body.removeChild(this.loadingOverlay);
+    }
+
+    // Finalizando o estado de carregamento
+    this.isLoading = false;
+  }
+},
     
     showNotificationMessage(message, type) {
       this.notificationMessage = message;

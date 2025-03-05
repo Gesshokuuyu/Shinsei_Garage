@@ -256,10 +256,10 @@
         <h2>Registro Completo!</h2>
         <p>Bem-vindo à Shinsei Garage, {{ Account.name }}!</p>
         <p class="sub-text">Sua conta foi criada com sucesso.</p>
-        <router-link to="/Home">
+        <router-link to="/Login">
           <button class="action-btn dashboard-btn">
             <font-awesome-icon :icon="['fas', 'tachometer-alt']" />
-            Ir para a Home
+            Ir para o Login
           </button>
         </router-link>
       </div>
@@ -269,7 +269,7 @@
     <div class="modal">
       <h2>Termos e Condições</h2>
       <p>
-        Aqui estão os termos de uso... (adicione o conteúdo real aqui).
+        Aqui estão os termos de uso.
       </p>
       <div class="btn-container">
         <button @click="showTermsModal = false" class="action-btn center-terms">Fechar</button>
@@ -279,6 +279,7 @@
 </template>
   
 <script>
+import api from '@/axios'; 
 export default {
   name: "ShinseiSignupUI",
   data() {
@@ -293,7 +294,7 @@ export default {
         confirmPassword: "",
         email: "",
       },
-      showTermsModal: true,
+      showTermsModal: false,
       name: "",
       username: "",
       password: "",
@@ -319,7 +320,8 @@ export default {
         password: false,
         confirmPassword: false,
         email: false
-      }
+      },
+      loadingOverlay: ''
     };
   },
   computed: {
@@ -334,16 +336,12 @@ export default {
       
       let strength = 0;
       
-      // Length check
       if (this.Account.password.length >= 7) strength += 25;
       
-      // Contains number
       if (/\d/.test(this.Account.password)) strength += 25;
       
-      // Contains lowercase
       if (/[a-z]/.test(this.Account.password)) strength += 25;
       
-      // Contains uppercase
       if (/[A-Z]/.test(this.Account.password)) strength += 25;
       
       return strength;
@@ -460,7 +458,6 @@ export default {
     },
     
     setStep(step) {
-      // Only allow going back or to current step
       if (step <= this.formStep) {
         this.formStep = step;
       }
@@ -470,21 +467,29 @@ export default {
       
     },
     
-    submitForm() {
-      if (this.termsAgreed) {
-        console.log(this.Account)
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'loading-overlay';
-        loadingOverlay.innerHTML = '<div class="loader"></div>';
-        document.body.appendChild(loadingOverlay);
-        
-        // Simulate API call
-        setTimeout(() => {
-          document.body.removeChild(loadingOverlay);
-          this.formSubmitted = true;
-          this.createAccount()  
-        
-        }, 1500);
+    async submitForm() {
+        if (this.termsAgreed) {
+            try {
+              
+              this.loadingOverlay = document.createElement('div');
+              this.loadingOverlay.className = 'loading-overlay';
+              this.loadingOverlay.innerHTML = '<div class="loader"></div>';
+              document.body.appendChild(this.loadingOverlay);
+
+             
+              const response = await api.post('/account/create', this.Account);
+
+              console.log('Resposta da API:', response.data);
+
+              this.formSubmitted = true;
+            } catch (error) {
+              console.error('Erro ao criar conta:', error);
+              alert('Erro ao criar conta. Verifique sua conexão.');
+            } finally {
+              if (this.loadingOverlay && document.body.contains(this.loadingOverlay)) {
+                document.body.removeChild(this.loadingOverlay);
+              }
+            }
       }
     }
   }
