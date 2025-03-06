@@ -14,44 +14,42 @@
           <a class="nav-link exit" @click="logOut()" v-if="userStore.isLoggedIn()" >Sair</a>
         </nav>
       </header>
-      <ShinseiSubMenu v-if="userStore.isLoggedIn()" ></ShinseiSubMenu>
+      <ShinseiSubMenu v-if="userStore.isLoggedIn()"></ShinseiSubMenu>
   
-      <div 
-    class="hero-carousel" 
-    :style="{ backgroundImage: `url(${heroSlides[currentSlide].image})` }"
+      <div class="hero-carousel">
+  <div 
+    v-for="(slide, index) in heroSlides" 
+    :key="index" 
+    class="slide"
+    :class="{ active: currentSlide === index }"
   >
-    <div 
-      v-for="(slide, index) in heroSlides" 
-      :key="index" 
-      class="slide"
-      :class="{ active: currentSlide === index }"
-    >
-      <div class="slide-content">
-        <div class="content-wrapper">
-          <h1 class="slide-title">{{ slide.title }}</h1>
-          <p class="slide-description">{{ slide.description }}</p>
-          <a :href="slide.ctaLink" class="cta-button">{{ slide.ctaText }}</a>
-        </div>
+  <img :src="slide.image" class="slide-image" alt="Slide image">
+    <div class="slide-content">
+      <div class="content-wrapper">
+        <h1 class="slide-title">{{ slide.title }}</h1>
+        <p class="slide-description">{{ slide.description }}</p>
+        <a :href="slide.ctaLink" class="cta-button">{{ slide.ctaText }}</a>
       </div>
     </div>
-    <div class="carousel-controls">
-      <button @click="prevSlide" class="carousel-btn-right prev-btn">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <button @click="nextSlide" class="carousel-btn-left next-btn">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
   </div>
-    <div class="slide-indicators">
-      <span 
-        v-for="(slide, index) in heroSlides" 
-        :key="index"
-        class="indicator"
-        :class="{ active: currentSlide === index }"
-        @click="currentSlide = index"
-      ></span>
-    </div>
+  <div class="carousel-controls">
+    <button @click="prevSlide" class="carousel-btn-right prev-btn">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button @click="nextSlide" class="carousel-btn-left next-btn">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
   </div>
+  <div class="slide-indicators">
+    <span 
+      v-for="(slide, index) in heroSlides" 
+      :key="index"
+      class="indicator"
+      :class="{ active: currentSlide === index }"
+      @click="currentSlide = index"
+    ></span>
+  </div>
+</div>
   <hr class="divise">
   
   
@@ -113,6 +111,8 @@
   </template>
   
   <script setup>
+  import F40 from '@/assets/imgs/f40.png'
+  import Nsx from '@/assets/imgs/nsx.png'
   import { ref, onMounted, onUnmounted } from 'vue'
   import { useUserStore } from '@/stores/userStore'
   import { useRouter } from 'vue-router'
@@ -143,7 +143,7 @@ import ShinseiSubMenu from './ShinseiSubMenu.vue'
   
   const heroSlides = ref([
     {
-      image: '',
+      image: F40,
       alt: 'Luxury Sports Car',
       title: 'Itens Personalizados',
       description: 'O melhor estilo dentre todo o mundo automotivo',
@@ -151,7 +151,7 @@ import ShinseiSubMenu from './ShinseiSubMenu.vue'
       ctaLink: '/itens'
     },
     {
-      image: '/api/placeholder/1920/1080',
+      image: Nsx,
       alt: 'Custom Garage Workshop',
       title: 'História automotiva',
       description: 'Conheça a história de carros lendários que marcaram épocas',
@@ -159,7 +159,7 @@ import ShinseiSubMenu from './ShinseiSubMenu.vue'
       ctaLink: '/cars'
     }
   ])
-  
+  console.log(Nsx)
   
   // Carousel Logic
   const currentSlide = ref(0)
@@ -332,16 +332,18 @@ import ShinseiSubMenu from './ShinseiSubMenu.vue'
   }
   
   .slide {
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     opacity: 0;
-     transition: opacity 1s ease, transform 1s ease;
-     transform: scale(1.1);
-     /* border-bottom: 1px solid #333; */
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease, transform 1s ease;
+  transform: scale(1.1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
   
   .divise {
       border: none;
