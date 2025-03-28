@@ -7,143 +7,99 @@
       brand: 'Tesla',
       price: 350000,
       year: 2023,
-      imageUrl: 'caminho/para/imagem.jpg',
+      imageUrl: carImg,
       mileage: 15000
     }"
     @view-details="handleDetails"/>
+
+    
       
-      <div class="filter-section">
-        <div class="filter-group">
-          <label>Marca:</label>
-          <select v-model="selectedBrand">
-            <option value="">Todas</option>
-            <option v-for="brand in uniqueBrands" :key="brand">{{ brand }}</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Categoria:</label>
-          <select v-model="selectedCategory">
-            <option value="">Todas</option>
-            <option v-for="category in uniqueCategories" :key="category">{{ category }}</option>
-          </select>
-        </div>
-      </div>
   
-      <div class="cars-grid">
-        <div 
-          v-for="car in filteredCars" 
-          :key="car.id" 
-          class="car-card"
-        >
-          <div class="car-image-container">
-            <img :src="car.image" :alt="car.name" class="car-image">
-          </div>
-          <div class="car-details">
-            <h2 class="car-name">{{ car.name }}</h2>
-            <div class="car-info">
-              <span class="car-brand">{{ car.brand }}</span>
-              <span class="car-category">{{ car.category }}</span>
-            </div>
-            <div class="car-specs">
-              <div class="spec">
-                <i class="icon-engine"></i>
-                <span>{{ car.engine }}</span>
-              </div>
-              <div class="spec">
-                <i class="icon-speed"></i>
-                <span>{{ car.speed }} km/h</span>
-              </div>
-            </div>
-            <div class="car-price">
-              R$ {{ formatPrice(car.price) }}
-            </div>
-            <button class="details-button">Ver Detalhes</button>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue'
+//   import { ref, computed } from 'vue'
   import ShinseiHeader from '@/components/ShinseiHeader.vue'
   import carCard from '@/components/cards/carCard.vue'
+  import carImg from '../assets/imgs/nsx.png'
   
-  const cars = ref([
-    {
-      id: 1,
-      name: 'Sportback Elegance',
-      brand: 'Audi',
-      category: 'Sedan',
-      engine: '2.0 TFSI',
-      speed: 240,
-      price: 250000,
-      image: '/api/placeholder/400/250'
-    },
-    {
-      id: 2,
-      name: 'M3 Competition',
-      brand: 'BMW',
-      category: 'Esportivo',
-      engine: '3.0 Biturbo',
-      speed: 290,
-      price: 350000,
-      image: '/api/placeholder/400/250'
-    },
-    {
-      id: 3,
-      name: 'AMG GT',
-      brand: 'Mercedes',
-      category: 'Esportivo',
-      engine: '4.0 V8',
-      speed: 315,
-      price: 450000,
-      image: '/api/placeholder/400/250'
-    },
-    {
-      id: 4,
-      name: 'Cayenne Turbo',
-      brand: 'Porsche',
-      category: 'SUV',
-      engine: '4.0 V8',
-      speed: 270,
-      price: 380000,
-      image: '/api/placeholder/400/250'
-    },
-    {
-      id: 5,
-      name: 'F-Type R',
-      brand: 'Jaguar',
-      category: 'Conversível',
-      engine: '5.0 V8',
-      speed: 300,
-      price: 420000,
-      image: '/api/placeholder/400/250'
-    }
-  ])
+//   const cars = ref([
+//     {
+//       id: 1,
+//       name: 'Sportback Elegance',
+//       brand: 'Audi',
+//       category: 'Sedan',
+//       engine: '2.0 TFSI',
+//       speed: 240,
+//       price: 250000,
+//       image: '/api/placeholder/400/250'
+//     },
+//     {
+//       id: 2,
+//       name: 'M3 Competition',
+//       brand: 'BMW',
+//       category: 'Esportivo',
+//       engine: '3.0 Biturbo',
+//       speed: 290,
+//       price: 350000,
+//       image: '/api/placeholder/400/250'
+//     },
+//     {
+//       id: 3,
+//       name: 'AMG GT',
+//       brand: 'Mercedes',
+//       category: 'Esportivo',
+//       engine: '4.0 V8',
+//       speed: 315,
+//       price: 450000,
+//       image: '/api/placeholder/400/250'
+//     },
+//     {
+//       id: 4,
+//       name: 'Cayenne Turbo',
+//       brand: 'Porsche',
+//       category: 'SUV',
+//       engine: '4.0 V8',
+//       speed: 270,
+//       price: 380000,
+//       image: '/api/placeholder/400/250'
+//     },
+//     {
+//       id: 5,
+//       name: 'F-Type R',
+//       brand: 'Jaguar',
+//       category: 'Conversível',
+//       engine: '5.0 V8',
+//       speed: 300,
+//       price: 420000,
+//       image: '/api/placeholder/400/250'
+//     }
+//   ])
   
-  const selectedBrand = ref('')
-  const selectedCategory = ref('')
+//   const selectedBrand = ref('')
+//   const selectedCategory = ref('')
   
-  const uniqueBrands = computed(() => {
-    return [...new Set(cars.value.map(car => car.brand))]
-  })
+//   const uniqueBrands = computed(() => {
+//     return [...new Set(cars.value.map(car => car.brand))]
+//   })
   
-  const uniqueCategories = computed(() => {
-    return [...new Set(cars.value.map(car => car.category))]
-  })
+//   const uniqueCategories = computed(() => {
+//     return [...new Set(cars.value.map(car => car.category))]
+//   })
   
-  const filteredCars = computed(() => {
-    return cars.value.filter(car => {
-      const brandMatch = !selectedBrand.value || car.brand === selectedBrand.value
-      const categoryMatch = !selectedCategory.value || car.category === selectedCategory.value
-      return brandMatch && categoryMatch
-    })
-  })
+//   const filteredCars = computed(() => {
+//     return cars.value.filter(car => {
+//       const brandMatch = !selectedBrand.value || car.brand === selectedBrand.value
+//       const categoryMatch = !selectedCategory.value || car.category === selectedCategory.value
+//       return brandMatch && categoryMatch
+//     })
+//   })
   
-  const formatPrice = (price) => {
-    return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
+//   const formatPrice = (price) => {
+//     return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+//   }
   </script>
   
   <style scoped>

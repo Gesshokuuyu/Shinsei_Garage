@@ -237,18 +237,20 @@ const LogOutAction = function(data){
   color: #ffffff;
   padding: 0.5rem;
   text-decoration: none;
+  border-radius: 10px;
   display: block;
   transition: background-color 0.7s ease;
 }
 
 .dropdown-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(105, 105, 105, 0.411);
   transition: background-color 0.3s ease;
+  border-radius: 10px;
 
 }
 
 .exit {
-  color: rgba(197, 45, 45, 0.836);
+  color: rgba(143, 24, 24, 0.836);
 }
 
 @media (max-width: 768px) {

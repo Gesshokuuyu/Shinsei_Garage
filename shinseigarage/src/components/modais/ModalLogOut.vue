@@ -54,7 +54,7 @@
   }
   
   .modal-container {
-    background-color: white;
+    background-color: rgb(24, 24, 24);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 400px;
@@ -70,7 +70,7 @@
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: #333;
+    color: #c9c9c9;
   }
   
   .modal-description {

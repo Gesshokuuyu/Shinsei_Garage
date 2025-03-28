@@ -78,7 +78,7 @@
   <style scoped>
   .car-card {
     width: 100%;
-    max-width: 350px;
+    max-width: 320px;
     background-color: #f4f4f4;
     border-radius: 12px;
     overflow: hidden;
