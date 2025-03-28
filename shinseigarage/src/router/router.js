@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/ShinseiHome.vue';
+import Cars from '@/views/ShinseiCars.vue'
 import ShinseiLoginUI from '@/components/ShinseiLoginUI.vue';
 import ShinseiSiginUI from '@/components/ShinseiSiginUI.vue';
 
@@ -8,6 +9,8 @@ const routes = [
   { path: '/Login', component: ShinseiLoginUI },
   { path: '/Signin', component: ShinseiSiginUI },
   { path: '/Home', component: Home },
+  { path: '/Cars', component: Cars },
+
 
 ];
 
