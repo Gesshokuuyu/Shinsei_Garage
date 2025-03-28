@@ -14,13 +14,12 @@ export default {
 
 <style>
 body{
-  background-color: rgba(0, 0, 0, 0.801);
+  background-color: rgb(29, 29, 29);
   overflow-y: scroll;
 }
 
-/* Estiliza a barra de rolagem para navegadores Webkit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-  width: 10px; /* Largura da barra */
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -40,6 +39,6 @@ body{
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(124, 124, 124)  rgba(0, 0, 0, 0.801);
+  scrollbar-color: rgb(0, 0, 0)  rgba(0, 0, 0, 0.801);
 }
 </style>

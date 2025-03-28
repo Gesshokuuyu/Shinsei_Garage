@@ -37,7 +37,6 @@
     }
   })
   
-  // Emitindo evento para o componente pai
   defineEmits(['action'])
   </script>
   <style scoped>

@@ -219,52 +219,134 @@ export default {
     },
     
     async Login() {
-  
-  if (!this.validateForm()) return;
+  // Validação inicial do formulário
+  if (!this.validateForm()) {
+    this.showNotificationMessage('Por favor, preencha todos os campos corretamente', 'error');
+    return;
+  }
 
-  
-  this.isLoading = true;
-
-  
-  this.user = {
-    'email': this.email,
-    'password': this.password,
-    'userName': this.username
+  // Preparação dos dados de login
+  const loginData = {
+    email: this.email.trim(),
+    password: this.password,
+    userName: this.username.trim()
   };
 
-  
-  this.loadingOverlay = document.createElement('div');
-  this.loadingOverlay.className = 'loading-overlay';
-  this.loadingOverlay.innerHTML = '<div class="loader"></div>';
-  document.body.appendChild(this.loadingOverlay);
+  // Estado de carregamento
+  this.isLoading = true;
+
+  // Criação do overlay de carregamento
+  const createLoadingOverlay = () => {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = `
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+  };
+
+  const loadingOverlay = createLoadingOverlay();
   const userStore = useUserStore();
 
   try {
-    
-    const response = await api.post('/account/login', this.user);
-    
-    console.log('Resposta da API:', response.data);
+    // Chamada à API de login
+    const response = await api.post('/account/login', loginData, {
+      // Configurações adicionais de timeout e tratamento de erros
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
+    // Verificação detalhada da resposta
     if (response.data.success) {
-      this.showNotificationMessage("Login realizado com sucesso!", "success");
-      userStore.login(response.data);  
-      this.$router.push('/home');
+      // Dados de login bem-sucedidos
+      const userData = {
+        id: response.data.userId,
+        email: loginData.email,
+        username: loginData.userName,
+        name: response.data.name || loginData.userName,
+        token: response.data.token,
+        roles: response.data.roles || []
+      };
+
+      // Login no store do usuário
+      const loginSuccess = userStore.login(userData);
+
+      if (loginSuccess) {
+        // Notificação de sucesso
+        this.showNotificationMessage("Login realizado com sucesso!", "success");
+        
+        // Redirecionamento baseado em roles ou perfil
+        this.handlePostLoginRedirect(userData);
+      } else {
+        throw new Error('Falha ao salvar dados do usuário');
+      }
     } else {
-      this.showNotificationMessage(response.data.error, "error");
+      // Tratamento de credenciais inválidas
+      throw new Error(response.data.error || 'Credenciais inválidas');
     }
 
   } catch (error) {
-    
-    console.error('Erro ao realizar login:', error);
-    this.showNotificationMessage('Usuário não encontrado', 'error');
+    // Tratamento centralizado de erros
+    console.error('Erro de login:', error);
+
+    const errorMessage = this.handleLoginError(error);
+    this.showNotificationMessage(errorMessage, 'error');
+
   } finally {
-    
-    if (this.loadingOverlay && document.body.contains(this.loadingOverlay)) {
-      document.body.removeChild(this.loadingOverlay);
+    // Limpeza do overlay de carregamento
+    if (loadingOverlay && document.body.contains(loadingOverlay)) {
+      document.body.removeChild(loadingOverlay);
     }
 
-    // Finalizando o estado de carregamento
+    // Finalização do estado de carregamento
     this.isLoading = false;
+
+    // Limpar campos sensíveis
+    this.clearSensitiveData();
+  }
+},
+
+clearSensitiveData() {
+  this.password = '';
+  // Opcional: limpar outros campos sensíveis
+  // this.email = '';
+},
+handleLoginError(error) {
+  if (error.response) {
+    // Erro de resposta do servidor
+    switch (error.response.status) {
+      case 401:
+        return 'Credenciais inválidas. Verifique seu email e senha.';
+      case 403:
+        return 'Acesso negado. Verifique suas permissões.';
+      case 404:
+        return 'Serviço de login não encontrado.';
+      case 500:
+        return 'Erro interno do servidor. Tente novamente mais tarde.';
+      default:
+        return error.response.data.message || 'Erro no login. Tente novamente.';
+    }
+  } else if (error.request) {
+    // Erro de conexão
+    return 'Sem resposta do servidor. Verifique sua conexão de internet.';
+  } else {
+    // Erro de configuração
+    return 'Erro ao processar o login. Tente novamente.';
+  }
+},
+handlePostLoginRedirect(userData) {
+  // Lógica de redirecionamento baseada em roles
+  if (userData.roles.includes('ADMIN')) {
+    this.$router.push('/admin-dashboard');
+  } else if (userData.roles.includes('MANAGER')) {
+    this.$router.push('/manager-dashboard');
+  } else {
+    this.$router.push('/home');
   }
 },
     
