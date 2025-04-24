@@ -219,106 +219,91 @@ export default {
     },
     
     async Login() {
-  // Validação inicial do formulário
-  if (!this.validateForm()) {
-    this.showNotificationMessage('Por favor, preencha todos os campos corretamente', 'error');
-    return;
-  }
-
-  // Preparação dos dados de login
-  const loginData = {
-    email: this.email.trim(),
-    password: this.password,
-    userName: this.username.trim()
-  };
-
-  // Estado de carregamento
-  this.isLoading = true;
-
-  // Criação do overlay de carregamento
-  const createLoadingOverlay = () => {
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-    overlay.innerHTML = `
-      <div class="loader-container">
-        <div class="loader"></div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    return overlay;
-  };
-
-  const loadingOverlay = createLoadingOverlay();
-  const userStore = useUserStore();
-
-  try {
-    // Chamada à API de login
-    const response = await api.post('/account/login', loginData, {
-      // Configurações adicionais de timeout e tratamento de erros
-      timeout: 10000,
-      headers: {
-        'Content-Type': 'application/json'
+      if (!this.validateForm()) {
+        this.showNotificationMessage('Por favor, preencha todos os campos corretamente', 'error');
+        return;
       }
-    });
 
-    // Verificação detalhada da resposta
-    if (response.data.success) {
-      // Dados de login bem-sucedidos
-      const userData = {
-        id: response.data.userId,
-        email: loginData.email,
-        username: loginData.userName,
-        name: response.data.name || loginData.userName,
-        token: response.data.token,
-        roles: response.data.roles || []
+      const loginData = {
+        email: this.email.trim(),
+        password: this.password,
+        userName: this.username.trim()
       };
 
-      // Login no store do usuário
-      const loginSuccess = userStore.login(userData);
+      this.isLoading = true;
 
-      if (loginSuccess) {
-        // Notificação de sucesso
-        this.showNotificationMessage("Login realizado com sucesso!", "success");
-        
-        // Redirecionamento baseado em roles ou perfil
-        this.handlePostLoginRedirect(userData);
-      } else {
-        throw new Error('Falha ao salvar dados do usuário');
+      const createLoadingOverlay = () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'loading-overlay';
+        overlay.innerHTML = `
+          <div class="loader-container">
+            <div class="loader"></div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        return overlay;
+      };
+
+      const loadingOverlay = createLoadingOverlay();
+      const userStore = useUserStore();
+
+      try {
+        // Chamada à API de login
+        const response = await api.post('/account/login', loginData, {
+          timeout: 10000,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.data.success) {
+          const { user, token } = response.data;
+
+          const userData = {
+            id: user.id,
+            email: user.email,
+            username: loginData.userName,
+            name: user.name || loginData.userName,
+            token: token,
+            role: user.role
+          };
+
+          const loginSuccess = userStore.login(userData);
+
+          if (loginSuccess) {
+            this.showNotificationMessage("Login realizado com sucesso!", "success");
+          
+            this.handlePostLoginRedirect();
+          } else {
+            throw new Error('Falha ao salvar dados do usuário');
+          }
+        } else {
+          // Tratamento de credenciais inválidas
+          throw new Error(response.data.error || 'Credenciais inválidas');
+        }
+
+      } catch (error) {
+        console.error('Erro de login:', error);
+
+        const errorMessage = this.handleLoginError(error);
+        this.showNotificationMessage(errorMessage, 'error');
+
+      } finally {
+        if (loadingOverlay && document.body.contains(loadingOverlay)) {
+          document.body.removeChild(loadingOverlay);
+        }
+        this.isLoading = false;
+        this.clearSensitiveData();
       }
-    } else {
-      // Tratamento de credenciais inválidas
-      throw new Error(response.data.error || 'Credenciais inválidas');
-    }
-
-  } catch (error) {
-    // Tratamento centralizado de erros
-    console.error('Erro de login:', error);
-
-    const errorMessage = this.handleLoginError(error);
-    this.showNotificationMessage(errorMessage, 'error');
-
-  } finally {
-    // Limpeza do overlay de carregamento
-    if (loadingOverlay && document.body.contains(loadingOverlay)) {
-      document.body.removeChild(loadingOverlay);
-    }
-
-    // Finalização do estado de carregamento
-    this.isLoading = false;
-
-    // Limpar campos sensíveis
-    this.clearSensitiveData();
-  }
-},
+  },
 
 clearSensitiveData() {
   this.password = '';
-  // Opcional: limpar outros campos sensíveis
-  // this.email = '';
+  this.email = '';
+  this.username = '';
 },
 handleLoginError(error) {
   if (error.response) {
-    // Erro de resposta do servidor
     switch (error.response.status) {
       case 401:
         return 'Credenciais inválidas. Verifique seu email e senha.';
@@ -339,15 +324,8 @@ handleLoginError(error) {
     return 'Erro ao processar o login. Tente novamente.';
   }
 },
-handlePostLoginRedirect(userData) {
-  // Lógica de redirecionamento baseada em roles
-  if (userData.roles.includes('ADMIN')) {
-    this.$router.push('/admin-dashboard');
-  } else if (userData.roles.includes('MANAGER')) {
-    this.$router.push('/manager-dashboard');
-  } else {
+handlePostLoginRedirect() {
     this.$router.push('/home');
-  }
 },
     
     showNotificationMessage(message, type) {

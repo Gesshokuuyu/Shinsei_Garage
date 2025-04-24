@@ -7,16 +7,15 @@ export const useUserStore = defineStore('user', {
       username: '',
       name: '',
       email: '', // Adicionado campo de email
-      roles: [], // Adicionado para controle de permissões
+      role: '', // Adicionado para controle de permissões
     },
     isAuthenticated: false,
-    token: null, // Token de autenticação separado
+    token: null,
   }),
 
   actions: {
     // Método de login mais robusto
     login(userData) {
-      // Validate input data
       if (!userData) {
         console.error('Dados de usuário inválidos');
         return false;
@@ -28,7 +27,7 @@ export const useUserStore = defineStore('user', {
         username: userData.username || '',
         name: userData.name || '',
         email: userData.email || '',
-        roles: userData.roles || []
+        role: userData.role || ''
       };
 
       // Armazena o token de forma segura
@@ -47,6 +46,7 @@ export const useUserStore = defineStore('user', {
 
         localStorage.setItem('user', JSON.stringify(safeUserData));
         localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('token', this.token);
         
         return true;
       } catch (error) {
@@ -63,7 +63,7 @@ export const useUserStore = defineStore('user', {
         username: '',
         name: '',
         email: '',
-        roles: []
+        role: ''
       };
       this.isAuthenticated = false;
       this.token = null;
@@ -100,7 +100,7 @@ export const useUserStore = defineStore('user', {
             username: parsedUser.username,
             name: parsedUser.name,
             email: parsedUser.email,
-            roles: []
+            role: ''
           };
           this.isAuthenticated = true;
 
@@ -125,7 +125,7 @@ export const useUserStore = defineStore('user', {
     },
 
     hasRole(role) {
-      return this.user.roles.includes(role);
+      return this.user.role.includes(role);
     },
 
     // Método para atualizar parte dos dados do usuário
