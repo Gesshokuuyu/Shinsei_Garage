@@ -5,6 +5,7 @@ import router from './router/router'
 import Toast, { POSITION } from 'vue-toastification'
 import axios from './axios'; 
 import 'vue-toastification/dist/index.css'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const toastOptions = {
   position: POSITION.TOP_RIGHT,
@@ -28,6 +29,7 @@ library.add(faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash, f
 
 const app = createApp(App)
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate)
 
 app.config.globalProperties.$axios = axios;
 app.use(router)

@@ -1,27 +1,25 @@
 import { defineStore } from 'pinia';
-
+import api from '@/axios';
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: {
       id: null,
       username: '',
       name: '',
-      email: '', // Adicionado campo de email
-      role: '', // Adicionado para controle de permissões
+      email: '',
+      role: '',
     },
     isAuthenticated: false,
     token: null,
   }),
 
   actions: {
-    // Método de login mais robusto
     login(userData) {
       if (!userData) {
         console.error('Dados de usuário inválidos');
         return false;
       }
 
-      // Atualiza o estado do usuário
       this.user = {
         id: userData.id || null,
         username: userData.username || '',
@@ -30,13 +28,10 @@ export const useUserStore = defineStore('user', {
         role: userData.role || ''
       };
 
-      // Armazena o token de forma segura
       this.token = userData.token || null;
       this.isAuthenticated = true;
 
-      // Armazenamento seguro
       try {
-        // Não armazena dados sensíveis como token
         const safeUserData = {
           id: this.user.id,
           username: this.user.username,
@@ -47,7 +42,7 @@ export const useUserStore = defineStore('user', {
         localStorage.setItem('user', JSON.stringify(safeUserData));
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('token', this.token);
-        
+
         return true;
       } catch (error) {
         console.error('Erro ao salvar dados do usuário:', error);
@@ -55,9 +50,48 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    // Método de logout aprimorado
+
+// Dentro de actions:
+  async loadUserExtraData() {
+    if (!this.user.id || !this.token) return;
+
+    try {
+      const response = await api.get(`/api/account/details/${this.user.id}`, {
+        headers: {
+          Authorization: `Bearer ${this.token}`
+        }
+      }); 
+
+      const { biografia, telefone, website, localizacao } = response.data;
+
+      this.user = {
+        ...this.user,
+        biografia,
+        telefone,
+        website,
+        localizacao
+      };
+
+      const safeUserData = {
+        id: this.user.id,
+        username: this.user.username,
+        name: this.user.name,
+        email: this.user.email,
+        biografia,
+        telefone,
+        website,
+        localizacao
+      };
+
+      localStorage.setItem('user', JSON.stringify(safeUserData));
+
+    } catch (error) {
+      console.error('Erro ao carregar dados extras do usuário:', error);
+    }
+  },
+
+
     logout() {
-      // Limpa todos os dados sensíveis
       this.user = {
         id: null,
         username: '',
@@ -68,56 +102,55 @@ export const useUserStore = defineStore('user', {
       this.isAuthenticated = false;
       this.token = null;
 
-      // Limpa o armazenamento
       try {
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
-        
-        // Opcional: limpar outros dados de sessão
+        localStorage.removeItem('token');
         sessionStorage.clear();
       } catch (error) {
         console.error('Erro ao limpar dados de usuário:', error);
       }
     },
 
-    // Verifica se o usuário está autenticado
     isLoggedIn() {
       return this.isAuthenticated;
     },
 
-    // Carrega dados do usuário do armazenamento
     loadUserFromStorage() {
       try {
         const storedUser = localStorage.getItem('user');
         const isAuthenticated = localStorage.getItem('isAuthenticated');
+        const storedToken = localStorage.getItem('token');
 
         if (storedUser && isAuthenticated === 'true') {
           const parsedUser = JSON.parse(storedUser);
-          
-          // Restaura apenas dados seguros
           this.user = {
             id: parsedUser.id,
             username: parsedUser.username,
             name: parsedUser.name,
             email: parsedUser.email,
-            role: ''
+            role: parsedUser.role || ''
           };
           this.isAuthenticated = true;
+          this.token = storedToken || null;
 
           return true;
         }
-        
+
         return false;
       } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);
-        this.logout(); // Limpa dados em caso de erro
+        this.logout();
         return false;
       }
     },
 
-    // Métodos auxiliares
     getUserName() {
-      return this.user.name || this.user.username || 'Usuário';
+      return  this.user.username ;
+    },
+
+    getUserSocialName(){
+      return this.user.name ;
     },
 
     getUserEmail() {
@@ -128,14 +161,12 @@ export const useUserStore = defineStore('user', {
       return this.user.role.includes(role);
     },
 
-    // Método para atualizar parte dos dados do usuário
     updateUserData(newData) {
       this.user = {
         ...this.user,
         ...newData
       };
 
-      // Atualiza armazenamento local
       try {
         localStorage.setItem('user', JSON.stringify(this.user));
       } catch (error) {
@@ -144,15 +175,9 @@ export const useUserStore = defineStore('user', {
     }
   },
 
-  // Configuração de persistência
+  // ✅ Persistência ajustada
   persist: {
     storage: localStorage,
-    paths: [
-      'user.id', 
-      'user.username', 
-      'user.name', 
-      'user.email', 
-      'isAuthenticated'
-    ]
+    paths: ['user', 'isAuthenticated', 'token']
   }
 });

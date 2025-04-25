@@ -1,7 +1,7 @@
 <template>
     <div class="account-layout">
       <aside class="sidebar">
-        <div class="sidebar-placeholder">Sidebar Content</div>
+        <div class="sidebar-placeholder"> </div>
       </aside>
       
       <main class="main-content">
