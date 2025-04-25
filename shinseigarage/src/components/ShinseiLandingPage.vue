@@ -3,7 +3,7 @@
     <ShinseiHeader/>     
     <main class="main-content">       
       <div class="carousel-wrapper">         
-        <VideoShinsei></VideoShinsei>         
+        <VideoShinsei/>       
         
       </div>     
     </main>      

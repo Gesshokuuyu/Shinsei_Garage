@@ -34,7 +34,7 @@
             <div class="user-profile dropdown">
               <span class="user-name">{{ userStore.getUserName() }}</span>
               <div class="dropdown-content">
-                <a href="/profile" class="dropdown-link">Perfil</a>
+                <a href="/Account" class="dropdown-link">Perfil</a>
                 <a href="/settings" class="dropdown-link">Configurações</a>
                 <a class="dropdown-link exit" @click="logOut">Sair</a>
               </div>

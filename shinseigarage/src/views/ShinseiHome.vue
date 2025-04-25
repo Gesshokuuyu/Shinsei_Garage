@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ShinseiLandingPage></ShinseiLandingPage>
+    <ShinseiLandingPage/>
   </div>
 </template>
 

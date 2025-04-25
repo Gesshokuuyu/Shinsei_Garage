@@ -317,10 +317,8 @@ handleLoginError(error) {
         return error.response.data.message || 'Erro no login. Tente novamente.';
     }
   } else if (error.request) {
-    // Erro de conexão
     return 'Sem resposta do servidor. Verifique sua conexão de internet.';
   } else {
-    // Erro de configuração
     return 'Erro ao processar o login. Tente novamente.';
   }
 },
@@ -381,7 +379,7 @@ body {
   width: 45%;
   background: rgba(30, 30, 30, .9);
   padding: 30px 0;
-  border-right: 5px solid rgba(255, 0, 0, .8);
+  border-right: 5px solid rgba(241, 241, 241, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -400,8 +398,8 @@ body {
 }
 
 .icon {
-  color: rgba(255, 0, 0, 1);
-  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+  color: rgb(236, 235, 235);
+  filter: drop-shadow(0 0 10px rgba(238, 237, 237, 0.7));
 }
 
 .pulse {
@@ -444,7 +442,7 @@ body {
   transform: translateX(-50%);
   width: 50px;
   height: 2px;
-  background: rgba(255, 0, 0, 0.8);
+  background: rgba(230, 229, 229, 0.8);
 }
 
 .noBullet {
@@ -461,7 +459,7 @@ body {
 }
 
 .inputContainer:hover label {
-  color: rgba(255, 0, 0, 0.8);
+  color: rgba(224, 224, 224, 0.8);
 }
 
 .inputContainer label {
@@ -479,7 +477,7 @@ body {
 .inputContainer label.active {
   top: -5px;
   font-size: 12px;
-  color: rgba(255, 0, 0, 1);
+  color: rgb(202, 202, 202);
   font-weight: 600;
   /* margin-left: -50px; */
 }
@@ -489,7 +487,7 @@ body {
   font-size: 16px;
   padding: 15px 10px;
   width: 100%;
-  border: 1px solid rgba(255, 0, 0, 0.5);
+  border: 1px solid rgba(221, 221, 221, 0.5);
   border-radius: 5px;
   background: rgba(20, 20, 20, .6);
   color: white;
@@ -498,8 +496,8 @@ body {
 }
 
 .inputFields:focus {
-  border-color: rgba(255, 0, 0, 1);
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  border-color: rgb(214, 214, 214);
+  box-shadow: 0 0 8px rgba(211, 211, 211, 0.5);
 }
 
 /* Password field styling */
@@ -521,7 +519,7 @@ body {
 }
 
 .password-toggle:hover {
-  color: rgba(255, 0, 0, 0.8);
+  color: rgba(212, 212, 212, 0.8);
 }
 
 .password-strength {
@@ -547,7 +545,7 @@ body {
 }
 
 .weak {
-  background-color: #ff4747;
+  background-color: #c40101;
 }
 
 .medium {
@@ -565,7 +563,7 @@ body {
 
 /* Validation messages */
 .validation-message {
-  color: #ff4747;
+  color: #ccc9c9;
   font-size: 11px;
   text-align: left;
   display: block;
@@ -582,7 +580,7 @@ body {
 }
 
 .submit-btn {
-  border: 1px solid rgba(255, 0, 0, 1);
+  border: 1px solid rgb(216, 216, 216);
   background: rgba(20, 20, 20, .6) !important;
   font-size: 18px;
   color: white;
@@ -592,13 +590,13 @@ body {
   border-radius: 5px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+  box-shadow: 0 0 5px rgba(170, 141, 141, 0.3);
 }
 
 .submit-btn:hover {
-  background: rgba(255, 0, 0, .7);
+  background: rgba(207, 207, 207, 0.7);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+  box-shadow: 0 5px 15px rgba(211, 211, 211, 0.4);
 }
 
 .submit-btn:active {
@@ -628,7 +626,7 @@ body {
 
 /* Info button styling */
 #info-btn {
-  border: 1px solid rgba(255, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   background: rgba(30, 30, 30, .8);
   font-size: 16px;
   color: white;
@@ -647,7 +645,7 @@ body {
 
 .glow-effect:before {
   content: '';
-  background: linear-gradient(45deg, #ff0000, #ff7300, #ff0000);
+  background: linear-gradient(45deg, #ffffff, #777777, #ffffff);
   position: absolute;
   top: -2px;
   left: -2px;
@@ -688,7 +686,7 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: rgba(255, 0, 0, 1);
+  background: rgb(245, 245, 245);
   transition: width 0.3s ease;
 }
 
@@ -735,14 +733,14 @@ body {
 }
 
 .register-link {
-  color: rgba(255, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s;
 }
 
 .register-link:hover {
-  color: rgba(255, 0, 0, 1);
+  color: rgb(95, 89, 89);
   text-decoration: underline;
 }
 
@@ -827,7 +825,7 @@ body {
   .info {
     width: 100%;
     border-right: none;
-    border-bottom: 5px solid rgba(255, 0, 0, .8);
+    border-bottom: 5px solid rgba(240, 235, 235, 0.8);
     padding: 20px 0;
   }
   

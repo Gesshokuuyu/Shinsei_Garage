@@ -3,6 +3,7 @@ import Home from '../views/ShinseiHome.vue';
 import Cars from '@/views/ShinseiCars.vue'
 import ShinseiLoginUI from '@/components/ShinseiLoginUI.vue';
 import ShinseiSiginUI from '@/components/ShinseiSiginUI.vue';
+import ShinseiUserAccount from '@/views/ShinseiUserAccount.vue';
 
 const routes = [
   { path: '/', component: ShinseiLoginUI, name: 'Login' },
@@ -10,6 +11,7 @@ const routes = [
   { path: '/Signin', component: ShinseiSiginUI },
   { path: '/Home', component: Home },
   { path: '/Cars', component: Cars },
+  { path: '/Account', component: ShinseiUserAccount}
 
 
 ];
