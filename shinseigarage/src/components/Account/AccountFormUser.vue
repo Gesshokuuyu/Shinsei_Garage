@@ -137,7 +137,7 @@
 
 <script>
 import { useUserStore } from '@/stores/userStore';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 
 export default {
   name: 'UserProfileEdit',
@@ -145,22 +145,23 @@ export default {
   setup() {
 
     const userStore = useUserStore();
-    userStore.loadUserExtraData()
+    
 
     const fileInput = ref(null);
     const previewImage = ref(null);
     const userExtraData = ref(null);
-
-    
+    onMounted(async () => {
+      userExtraData.value = await userStore.loadUserExtraData()
+    })
 
     const userProfile = reactive({
-      name: userStore.getUserSocialName(),
-      username: userStore.getUserName(),
-      email: userStore.getUserEmail(),
-      bio: '',
-      phone: '',
-      website: '',
-      location: '',
+      name: userStore.getUserSocialName() || '',
+      username: userStore.getUserName() || '',
+      email: userStore.getUserEmail() || '',
+      bio: userExtraData.value?.biografia || '',
+      phone: userExtraData.value?.telefone || '',
+      website: userExtraData.value?.website || '',
+      location: userExtraData.value?.localizacao || '',
       profileImage: null
     });
     
@@ -186,8 +187,28 @@ export default {
       fileInput.value.value = '';
     };
     
-    const saveProfile = () => {
-      
+    const  saveProfile = async () => {
+      const formData = new FormData();
+
+      formData.append('name', userProfile.name || '');
+      formData.append('username', userProfile.username || '');
+      formData.append('email', userProfile.email || '');
+      formData.append('bio', userProfile.bio || '');
+      formData.append('phone', userProfile.phone || '');
+      formData.append('website', userProfile.website || '');
+      formData.append('location', userProfile.location || '');
+      formData.append('id', userStore.getUserId());
+
+      if(userProfile.profileImage){
+        formData.append('profileImage', userProfile.profileImage)
+      }
+
+      try{
+        await userStore.saveProfileUser(formData)
+      }catch(error){
+        console.error('Erro ao salvar Perfil: ', error);
+        
+      }
     };
     
     const cancelEdit = () => {

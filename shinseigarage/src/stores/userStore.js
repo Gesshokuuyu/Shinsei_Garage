@@ -50,8 +50,23 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async saveProfileUser(userData){
+      try {
+        const response = await api.post('/api/account/saveUserProfile', userData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${this.token}`
+          }
+        });
+    
+        console.log('Perfil atualizado com sucesso!', response.data);
+    
+      } catch (error) {
+        console.error('Erro ao salvar perfil:', error);
+      }
+    },
 
-// Dentro de actions:
+
   async loadUserExtraData() {
     if (!this.user.id || !this.token) return;
 
@@ -64,13 +79,6 @@ export const useUserStore = defineStore('user', {
 
       const { biografia, telefone, website, localizacao } = response.data;
 
-      this.user = {
-        ...this.user,
-        biografia,
-        telefone,
-        website,
-        localizacao
-      };
 
       const safeUserData = {
         id: this.user.id,
@@ -83,7 +91,7 @@ export const useUserStore = defineStore('user', {
         localizacao
       };
 
-      localStorage.setItem('user', JSON.stringify(safeUserData));
+     return safeUserData;
 
     } catch (error) {
       console.error('Erro ao carregar dados extras do usuário:', error);
@@ -149,6 +157,10 @@ export const useUserStore = defineStore('user', {
       return  this.user.username ;
     },
 
+    getUserId(){
+      return this.user.id;
+    },
+
     getUserSocialName(){
       return this.user.name ;
     },
@@ -160,6 +172,7 @@ export const useUserStore = defineStore('user', {
     hasRole(role) {
       return this.user.role.includes(role);
     },
+
 
     updateUserData(newData) {
       this.user = {
