@@ -139,6 +139,8 @@
 import { useUserStore } from '@/stores/userStore';
 import { ref, reactive, onMounted } from 'vue';
 
+import { useToast } from 'vue-toastification';
+
 export default {
   name: 'UserProfileEdit',
   
@@ -150,27 +152,36 @@ export default {
     const fileInput = ref(null);
     const previewImage = ref(null);
     const userExtraData = ref(null);
-    onMounted(async () => {
-      userExtraData.value = await userStore.loadUserExtraData()
-
-      previewImage.value = userExtraData.value?.imagePath 
-      ? `http://localhost:8000${userExtraData.value.imagePath}` 
-      : null
-    })
-
+    const toast = useToast();
     const userProfile = reactive({
-      name: userStore.getUserSocialName() || '',
-      username: userStore.getUserName() || '',
-      email: userStore.getUserEmail() || '',
-      bio: userExtraData.value?.biografia || '',
-      phone: userExtraData.value?.telefone || '',
-      website: userExtraData.value?.website || '',
-      location: userExtraData.value?.localizacao || '',
-      profileImage: userExtraData.value?.imagePath 
-      ? `http://localhost:8000${userExtraData.value.imagePath}` 
-      : null,
-    });
+    name: userStore.getUserSocialName() || '',
+    username: userStore.getUserName() || '',
+    email: userStore.getUserEmail() || '',
+    bio: '',
+    phone: '',
+    website: '',
+    location: '',
+    profileImage: null,
+  });
+
+onMounted(async () => {
+  userExtraData.value = await userStore.loadUserExtraData();
+
+  previewImage.value = userExtraData.value?.imagePath !== 'null' && userExtraData.value.imagePath !== '' && userExtraData.value.imagePath
+    ? `http://localhost:8000${userExtraData.value.imagePath}`
+    : null;
+
+  userProfile.bio = userExtraData.value?.biografia || '';
+  userProfile.phone = userExtraData.value?.telefone || '';
+  userProfile.website = userExtraData.value?.website || '';
+  userProfile.location = userExtraData.value?.localizacao || '';
+  userProfile.profileImage = userExtraData.value?.imagePath !== 'null' && userExtraData.value.imagePath !== '' && userExtraData.value.imagePath
+    ? `http://localhost:8000${userExtraData.value.imagePath}`
+    : null;
+});
+
     
+    console.log(userProfile)
     const triggerFileInput = () => {
       fileInput.value.click();
     };
@@ -204,24 +215,26 @@ export default {
       formData.append('website', userProfile.website || '');
       formData.append('location', userProfile.location || '');
       formData.append('id', userStore.getUserId());
+      formData.append('profileImage', userProfile.profileImage)
 
-      if(userProfile.profileImage){
-        formData.append('profileImage', userProfile.profileImage)
-      }
+      
 
       try{
         await userStore.saveProfileUser(formData)
+        toast.success('Usuário atualizado com sucesso!')
+
       }catch(error){
-        console.error('Erro ao salvar Perfil: ', error);
-        
+        toast.error('Erro ao salvar Perfil! ');
+        console.error('Erro de perfil: ', error)
       }
     };
     
     const cancelEdit = () => {
       if (confirm('Deseja cancelar as alterações?')) {
-        console.log('Edição cancelada');
+        toast.info('Edição cancelada.');
       }
     };
+
     
     return {
       fileInput,
@@ -239,7 +252,6 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos gerais e reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -249,6 +261,7 @@ export default {
 
 .profile-container {
   max-width: 700px;
+  
   margin: 0 auto;
   padding: 40px 30px;
   background: #1a1818;

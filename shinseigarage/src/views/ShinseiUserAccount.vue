@@ -1,7 +1,10 @@
 <template>
     <div class="account-layout">
       <aside class="sidebar">
-        <div class="sidebar-placeholder"> </div>
+        <!-- <div class="sidebar-placeholder"> 
+          Opções de Edição
+        </div> -->
+        <AccountSideOpitons/>
       </aside>
       
       <main class="main-content">
@@ -12,6 +15,7 @@
   
   <script setup>
   import AccountFormUser from '@/components/Account/AccountFormUser.vue';
+  import AccountSideOpitons from '@/components/Account/AccountSideOpitons.vue';
   </script>
   
   <style scoped>

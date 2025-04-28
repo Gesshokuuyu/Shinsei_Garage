@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async saveProfileUser(userData){
+    async saveProfileUser(userData) {
       try {
         const response = await api.post('/api/account/saveUserProfile', userData, {
           headers: {
@@ -59,12 +59,27 @@ export const useUserStore = defineStore('user', {
           }
         });
     
-        console.log('Perfil atualizado com sucesso!', response.data);
+        console.log('Perfil atualizado com sucesso!', userData.value);
+    
+        if (response.data && response.data.user) {
+          const user = response.data.user;
+        
+          this.user.name = user.name || this.user.name;
+          this.user.username = user.username || this.user.username;
+          this.user.email = user.email || this.user.email;
+
+        return true;
+
+        }
+    
+        return false;
     
       } catch (error) {
         console.error('Erro ao salvar perfil:', error);
+        return false;
       }
     },
+    
 
 
   async loadUserExtraData() {
@@ -189,7 +204,7 @@ export const useUserStore = defineStore('user', {
     }
   },
 
-  // ✅ Persistência ajustada
+
   persist: {
     storage: localStorage,
     paths: ['user', 'isAuthenticated', 'token']

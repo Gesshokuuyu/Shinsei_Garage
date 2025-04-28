@@ -516,8 +516,8 @@ body {
 }
 
 .icon {
-  color: rgba(255, 0, 0, 1);
-  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+  color: rgb(243, 243, 243);
+  filter: drop-shadow(0 0 10px rgba(247, 247, 247, 0.7));
 }
 
 .pulse {
@@ -525,7 +525,7 @@ body {
 }
 
 .terms-link {
-  color: rgba(255, 0, 0, 1);
+  color: rgb(235, 235, 235);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -544,8 +544,8 @@ body {
 
 .modal {
   background: rgba(30, 30, 30, 0.911);
-  color: rgba(194, 15, 15, 0.87);
-  border: 1px solid rgba(255, 0, 0, 0.5);
+  color: rgba(223, 223, 223, 0.87);
+  border: 1px solid rgba(235, 235, 235, 0.5);
   padding: 20px;
   border-radius: 8px 8px 8px 30px;
   width: 400px;
@@ -577,12 +577,12 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: rgba(255, 0, 0, 1);
+  background: rgb(233, 232, 232);
   transition: width 0.3s ease;
 }
 
 #info-btn {
-  border: 1px solid rgba(255, 0, 0, 0.8);
+  border: 1px solid rgba(240, 240, 240, 0.8);
   background: rgba(30, 30, 30, .8);
   font-size: 16px;
   color: white;
@@ -620,7 +620,7 @@ body {
   width: 45%;
   background: rgba(30, 30, 30, .9);
   padding: 30px 0;
-  border-right: 5px solid rgba(255, 0, 0, .8);
+  border-right: 5px solid rgba(238, 238, 238, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -644,7 +644,7 @@ body {
 
 .info .icon {
   font-size: 8em;
-  color: rgba(255, 0, 0, 1);
+  color: rgb(236, 236, 236);
   margin: 20px 0;
 }
 
@@ -697,7 +697,7 @@ body {
 }
 
 .step.active {
-  background: rgba(255, 0, 0, .8);
+  background: rgba(109, 107, 107, 0.8);
   transform: scale(1.2);
 }
 
@@ -707,7 +707,7 @@ body {
 
 .step.completed:not(:last-child):after,
 .step.active:not(:last-child):after {
-  background: rgba(255, 0, 0, .8);
+  background: rgba(138, 135, 135, 0.8);
 }
 
 /* Form steps */
@@ -726,7 +726,7 @@ body {
 }
 
 .inputContainer:hover label {
-  color: rgba(255, 0, 0, 0.8);
+  color: rgba(247, 247, 247, 0.8);
 }
 
 .inputContainer label {
@@ -744,7 +744,7 @@ body {
 .inputContainer label.active {
   top: -5px;
   font-size: 12px;
-  color: rgba(255, 0, 0, 1);
+  color: rgb(241, 241, 241);
   font-weight: 600;
   /* margin-left: -50px; */
 }
@@ -754,7 +754,7 @@ body {
   font-size: 16px;
   padding: 15px 10px;
   width: 100%;
-  border: 1px solid rgba(255, 0, 0, 0.5);
+  border: 1px solid rgba(243, 242, 242, 0.5);
   border-radius: 5px;
   background: rgba(20, 20, 20, .6);
   color: white;
@@ -763,7 +763,7 @@ body {
 }
 
 .inputFields:focus {
-  box-shadow: 0 0 5px rgba(255, 0, 0, .5);
+  box-shadow: 0 0 5px rgba(241, 241, 241, 0.692);
 }
 
 .validation-icon {
@@ -837,7 +837,7 @@ body {
 }
 
 .action-btn {
-  border: 1px solid rgba(255, 0, 0, 1);
+  border: 1px solid rgb(236, 233, 233);
   background: rgba(20, 20, 20, .6);
   font-size: 16px;
   color: white;
@@ -852,7 +852,7 @@ body {
 }
 
 .action-btn:hover:not(:disabled) {
-  background: rgba(255, 0, 0, .8);
+  background: rgba(238, 238, 238, 0.8);
   transform: translateY(-2px);
   box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
 }
@@ -884,7 +884,7 @@ body {
 }
 
 .password-toggle:hover {
-  color: rgba(255, 0, 0, 0.8);
+  color: rgba(207, 207, 207, 0.8);
 }
 
 .back-btn svg, .next-btn svg {
@@ -990,7 +990,7 @@ body {
 .loader {
   border: 5px solid rgba(30, 30, 30, .3);
   border-radius: 50%;
-  border-top: 5px solid rgba(255, 0, 0, .8);
+  border-top: 5px solid rgba(209, 205, 205, 0.8);
   width: 50px;
   height: 50px;
   animation: spin 1s linear infinite;
@@ -1039,7 +1039,7 @@ body {
   .info {
     width: 100%;
     border-right: none;
-    border-bottom: 5px solid rgba(255, 0, 0, .8);
+    border-bottom: 5px solid rgba(209, 208, 208, 0.8);
     padding: 15px 0;
   }
   

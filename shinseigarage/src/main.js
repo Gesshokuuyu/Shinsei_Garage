@@ -1,10 +1,11 @@
-import { createApp } from 'vue'
+import { createApp } from 'vue' 
 import { createPinia } from 'pinia';
-import App from './App.vue'
-import router from './router/router'
-import Toast, { POSITION } from 'vue-toastification'
-import axios from './axios'; 
-import 'vue-toastification/dist/index.css'
+import App from './App.vue' 
+import router from './router/router' 
+import Toast, { POSITION } from 'vue-toastification' 
+import axios from './axios';
+
+import 'vue-toastification/dist/index.css' 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const toastOptions = {
@@ -20,12 +21,253 @@ const toastOptions = {
   rtl: false
 }
 
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core' 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash,faArrowRight, faArrowLeft,faTimes, faUserPlus   } from '@fortawesome/free-solid-svg-icons';
+import {
+  // Ícones que você já tem
+  faCar,
+  faUser,
+  faEnvelope,
+  faLock,
+  faGaugeHigh,
+  faEye,
+  faEyeSlash,
+  faArrowRight,
+  faArrowLeft,
+  faTimes,
+  faUserPlus,
+  
+  // Ícones adicionais para perfil/conta de usuário
+  faUserCircle,
+  faUserEdit,
+  
+  // Configurações e preferências
+  faCog,
+  faWrench,
+  faBell,
+  
+  // Segurança
+  faShieldAlt,
+  faKey,
+  faFingerprint,
+  faLockOpen,
+  
+  // Pagamento e faturamento
+  faCreditCard,
+  faMoneyBillWave,
+  faWallet,
+  faDollarSign,
+  faFileInvoice,
+  faFileInvoiceDollar,
+  
+  // Ajuda e suporte
+  faQuestionCircle,
+  faInfoCircle,
+  faHeadset,
+  faCommentDots,
+  faComments,
+  
+  // Navegação
+  faHome,
+  faSignOutAlt,
+  faSignInAlt,
+  faBars,
+  faAngleRight,
+  faAngleLeft,
+  faAngleDown,
+  faAngleUp,
+  faEllipsisV,
+  
+  // Notificações e alertas
+  faExclamationCircle,
+  faExclamationTriangle,
+  faCheckCircle,
+  faBan,
+  
+  // Ações
+  faSave,
+  faTrash,
+  faEdit,
+  faPlus,
+  faMinus,
+  faCheck,
+  faPen,
+  
+  // Arquivos e documentos
+  faFile,
+  faFileAlt,
+  faFileUpload,
+  faFileDownload,
+  faFileExport,
+  faFileImport,
+  
+  // Comunicação
+  faPaperPlane,
+  faReply,
+  faShare,
+  
+  // Calendário e tempo
+  faCalendar,
+  faCalendarAlt,
+  faClock,
+  faHistory,
+  
+  // Localização
+  faMapMarkerAlt,
+  faCompass,
+  
+  // Pesquisa e filtros
+  faSearch,
+  faFilter,
+  faSort,
+  faSortUp,
+  faSortDown,
+  
+  // Social e comunidade
+  faUsers,
+  faUserFriends,
+  faShareAlt,
+  
+  // Dispositivos e tecnologia
+  faMobile,
+  faTablet,
+  faDesktop,
+  faPrint,
+  
+  // Outros ícones úteis
+  faStar,
+  faHeart,
+  faBookmark,
+  faGlobe,
+  faSync,
+  faSpinner,
+  faTag,
+  faTags
 
-library.add(faCar, faUser, faEnvelope, faLock, faGaugeHigh, faEye, faEyeSlash, faArrowRight, faArrowLeft,faTimes, faUserPlus    );
+} from '@fortawesome/free-solid-svg-icons';
+
+library.add(
+  // Ícones que você já tem
+  faCar,
+  faUser,
+  faEnvelope,
+  faLock,
+  faGaugeHigh,
+  faEye,
+  faEyeSlash,
+  faArrowRight,
+  faArrowLeft,
+  faTimes,
+  faUserPlus,
+  
+  // Ícones adicionais para perfil/conta de usuário
+  faUserCircle,
+  faUserEdit,
+  
+  // Configurações e preferências
+  faCog,
+  faWrench,
+  faBell,
+  
+  // Segurança
+  faShieldAlt,
+  faKey,
+  faFingerprint,
+  faLockOpen,
+  
+  // Pagamento e faturamento
+  faCreditCard,
+  faMoneyBillWave,
+  faWallet,
+  faDollarSign,
+  faFileInvoice,
+  faFileInvoiceDollar,
+  
+  // Ajuda e suporte
+  faQuestionCircle,
+  faInfoCircle,
+  faHeadset,
+  faCommentDots,
+  faComments,
+  
+  // Navegação
+  faHome,
+  faSignOutAlt,
+  faSignInAlt,
+  faBars,
+  faAngleRight,
+  faAngleLeft,
+  faAngleDown,
+  faAngleUp,
+  faEllipsisV,
+  
+  // Notificações e alertas
+  faExclamationCircle,
+  faExclamationTriangle,
+  faCheckCircle,
+  faBan,
+  
+  // Ações
+  faSave,
+  faTrash,
+  faEdit,
+  faPlus,
+  faMinus,
+  faCheck,
+  faPen,
+  
+  // Arquivos e documentos
+  faFile,
+  faFileAlt,
+  faFileUpload,
+  faFileDownload,
+  faFileExport,
+  faFileImport,
+  
+  // Comunicação
+  faPaperPlane,
+  faReply,
+  faShare,
+  
+  // Calendário e tempo
+  faCalendar,
+  faCalendarAlt,
+  faClock,
+  faHistory,
+  
+  // Localização
+  faMapMarkerAlt,
+  faCompass,
+  
+  // Pesquisa e filtros
+  faSearch,
+  faFilter,
+  faSort,
+  faSortUp,
+  faSortDown,
+  
+  // Social e comunidade
+  faUsers,
+  faUserFriends,
+  faShareAlt,
+  
+  // Dispositivos e tecnologia
+  faMobile,
+  faTablet,
+  faDesktop,
+  faPrint,
+  
+  // Outros ícones úteis
+  faStar,
+  faHeart,
+  faBookmark,
+  faGlobe,
+  faSync,
+  faSpinner,
+  faTag,
+  faTags
+);
 
 const app = createApp(App)
 const pinia = createPinia();
