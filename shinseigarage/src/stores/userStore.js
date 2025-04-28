@@ -77,7 +77,7 @@ export const useUserStore = defineStore('user', {
         }
       }); 
 
-      const { biografia, telefone, website, localizacao } = response.data;
+      const { su_biografia: biografia,su_phone: telefone, su_website: website, su_locate: localizacao, su_image_path: imagePath } = response.data;
 
 
       const safeUserData = {
@@ -88,7 +88,8 @@ export const useUserStore = defineStore('user', {
         biografia,
         telefone,
         website,
-        localizacao
+        localizacao,
+        imagePath
       };
 
      return safeUserData;

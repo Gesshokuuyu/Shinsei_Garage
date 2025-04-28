@@ -152,6 +152,10 @@ export default {
     const userExtraData = ref(null);
     onMounted(async () => {
       userExtraData.value = await userStore.loadUserExtraData()
+
+      previewImage.value = userExtraData.value?.imagePath 
+      ? `http://localhost:8000${userExtraData.value.imagePath}` 
+      : null
     })
 
     const userProfile = reactive({
@@ -162,7 +166,9 @@ export default {
       phone: userExtraData.value?.telefone || '',
       website: userExtraData.value?.website || '',
       location: userExtraData.value?.localizacao || '',
-      profileImage: null
+      profileImage: userExtraData.value?.imagePath 
+      ? `http://localhost:8000${userExtraData.value.imagePath}` 
+      : null,
     });
     
     const triggerFileInput = () => {
