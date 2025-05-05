@@ -1,9 +1,6 @@
 <template>
     <div class="account-layout">
       <aside class="sidebar">
-        <!-- <div class="sidebar-placeholder"> 
-          Opções de Edição
-        </div> -->
         <AccountSideOpitons/>
       </aside>
       
@@ -16,6 +13,29 @@
   <script setup>
   import AccountFormUser from '@/components/Account/AccountFormUser.vue';
   import AccountSideOpitons from '@/components/Account/AccountSideOpitons.vue';
+
+  import { onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useUserStore } from '@/stores/userStore';
+  import { useToast } from 'vue-toastification';
+
+  
+  const userStore = useUserStore()
+  const router = useRouter()
+  const toast = useToast()
+
+    const HandleUser = function(){
+      if(!userStore.isLoggedIn()){
+        toast.error('Para acessar está pagina, você deve estar autenticado em uma conta!')
+        setTimeout(()=> {
+          router.push('/login')
+        }, 3500)
+      }
+    }
+    
+    onMounted(() => {
+      HandleUser()
+    })
   </script>
   
   <style scoped>
@@ -26,7 +46,7 @@
   }
   
   .sidebar {
-    width: 250px;
+    width: 270px;
     background-color: #242323;
     border-right: 1px solid #e0e0e0;
     padding: 1rem;

@@ -16,6 +16,8 @@ export default {
 body{
   background-color: rgb(29, 29, 29);
   overflow-y: scroll;
+  border: 0;
+  margin: 0;
 }
 
 ::-webkit-scrollbar {
@@ -38,7 +40,9 @@ body{
 }
 
 * {
+  border: none !important;
+  outline: none !important;
   scrollbar-width: thin;
-  scrollbar-color: rgb(0, 0, 0)  rgba(0, 0, 0, 0.801);
+  scrollbar-color: rgb(0, 0, 0) rgba(0, 0, 0, 0.801);
 }
 </style>

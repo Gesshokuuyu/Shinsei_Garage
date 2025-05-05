@@ -186,6 +186,7 @@ const LogOutAction = function(data){
 .search-input {
   background: transparent;
   border: none;
+  padding: 3px;
   color: #ffffff;
   width: 150px;
   outline: none;

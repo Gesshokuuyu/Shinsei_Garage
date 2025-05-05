@@ -181,6 +181,28 @@ export const useUserStore = defineStore('user', {
       return this.user.name ;
     },
 
+    async getUserImage(){
+      if (!this.user.id || !this.token) return;
+
+      try {
+        const response = await api.get(`/api/account/details/${this.user.id}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`
+          }
+        }); 
+  
+        const { su_image_path } = response.data;
+        
+        if(su_image_path){
+          return `http://localhost:8000${su_image_path}` 
+        }
+      }catch (error) {
+        console.error('Erro ao carregar imagens do usuário:', error);
+        this.logout();
+        return false;
+      }
+    },
+
     getUserEmail() {
       return this.user.email;
     },

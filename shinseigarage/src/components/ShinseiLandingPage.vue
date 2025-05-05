@@ -1,38 +1,48 @@
-<template>   
-  <div class="page-container">     
-    <ShinseiHeader/>     
-    <main class="main-content">       
-      <div class="carousel-wrapper">         
-        <VideoShinsei/>       
-        
-      </div>     
-    </main>      
-  </div> 
-</template>  
+<template>
+  <div class="page-container">
+    <ShinseiHeader/>
+    <main class="main-content">
+      <div class="carousel-wrapper">
+      </div>
+    </main>
+  </div>
+  <FooterComponent/>
+</template>
 
-<script setup> 
-import VideoShinsei from './home/ShinseiVideoPlayer.vue'; 
-import ShinseiHeader from './ShinseiHeader.vue'; 
-</script>  
+<script setup>
+import FooterComponent from './FooterComponent.vue';
+import ShinseiHeader from './ShinseiHeader.vue';
+</script>
 
-<style scoped> 
-.page-container {   
-  position: relative;   
-  min-height: 100vh; 
-}  
+<style scoped>
+/* Remover todas as bordas dentro deste componente */
+.page-container *,
+.main-content *,
+.carousel-wrapper *,
+main * {
+  border: none !important;
+  outline: none !important;
+}
 
-.main-content {   
-  display: flex;   
-  justify-content: center;   
-  align-items: center;   
-  padding-top: 80px;   
-  padding-bottom: 2rem;   
-  height: 100%; 
-}  
+.page-container {
+  position: relative;
+  min-height: 100vh;
+  border: none;
+}
 
-.carousel-wrapper {   
-  width: 100%;   
-  max-width: 800px; 
-}  
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
+  padding-bottom: 2rem;
+  height: 100%;
+  border: none;
+}
 
+.carousel-wrapper {
+  width: 100%;
+  max-width: 800px;
+  border: none;
+}
 </style>
