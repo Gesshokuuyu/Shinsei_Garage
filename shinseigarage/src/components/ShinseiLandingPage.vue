@@ -2,8 +2,7 @@
   <div class="page-container">
     <ShinseiHeader/>
     <main class="main-content">
-      <div class="carousel-wrapper">
-      </div>
+     <ShinseiVideoPlayer/>      
     </main>
   </div>
   <FooterComponent/>
@@ -12,13 +11,12 @@
 <script setup>
 import FooterComponent from './FooterComponent.vue';
 import ShinseiHeader from './ShinseiHeader.vue';
+import ShinseiVideoPlayer from './home/ShinseiVideoPlayer.vue';
 </script>
 
 <style scoped>
-/* Remover todas as bordas dentro deste componente */
 .page-container *,
 .main-content *,
-.carousel-wrapper *,
 main * {
   border: none !important;
   outline: none !important;
@@ -34,15 +32,8 @@ main * {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 80px;
-  padding-bottom: 2rem;
   height: 100%;
-  border: none;
+  border: 5px solid transparent; 
 }
 
-.carousel-wrapper {
-  width: 100%;
-  max-width: 800px;
-  border: none;
-}
 </style>

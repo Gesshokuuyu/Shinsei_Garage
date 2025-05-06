@@ -11,7 +11,7 @@
             <span class="logo-subtext">GARAGE</span>
           </div>
         </div>
-        <p class="footer-slogan">Excelência automotiva ao seu alcance</p>
+        <p class="footer-slogan"> Excelência automotiva </p>
       </div>
       
       <div class="footer-section footer-links">
@@ -67,10 +67,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import logo from '../../public/images/ShinseiFavIcon/android-chrome-192x192.png';
+import { useUserStore } from '@/stores/userStore';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+
+const userStore = useUserStore();
+
 
 const emailSubscribe = ref('')
 const currentYear = computed(() => new Date().getFullYear())
 const ShinseiLogo = ref(null)
+
 
 onMounted(()=>{
   ShinseiLogo.value = logo
@@ -80,23 +88,36 @@ const buttonIcon = ref('fa-solid fa-paper-plane');
 const iconStyle = ref({});
 const isAnimating = ref(false);
 
+const handleKeyPress = (event) => {
+
+  if (event.ctrlKey && event.keyCode === 13) {
+    event.preventDefault(); 
+    subscribeNewsletter();
+  }
+};
+
+document.addEventListener('keydown', handleKeyPress);
+
 const subscribeNewsletter = () => {
+  if (!emailSubscribe.value) {
+    toast.error('Por favor, insira um e-mail válido.');
+    return;
+  }
+  if (!/\S+@\S+\.\S+/.test(emailSubscribe.value)) {
+    toast.error('Por favor, insira um e-mail válido.');
+    return;
+  }
   if (isAnimating.value) return;
   isAnimating.value = true;
   
-  // Animação de envio
-  iconStyle.value = { transform: 'translateX(50px)', opacity: '0', transition: 'all 0.5s ease' };
+  iconStyle.value = { transform: 'translate(30px, -30px)', opacity: '0', transition: 'all 0.5s ease' };
   
   setTimeout(() => {
-    // Troca para o ícone de verificação
     buttonIcon.value = 'fa-solid fa-check';
     iconStyle.value = { transform: 'translateX(0)', opacity: '0' };
     
     setTimeout(() => {
-      // Faz o ícone de verificação aparecer
       iconStyle.value = { transform: 'translateX(0)', opacity: '1', transition: 'all 0.3s ease' };
-      
-      // Retorna para o ícone original após 2 segundos
       setTimeout(() => {
         iconStyle.value = { opacity: '0', transition: 'opacity 0.3s ease' };
         
@@ -108,8 +129,7 @@ const subscribeNewsletter = () => {
       }, 2000);
     }, 100);
   }, 500);
-  
-  // Aqui você pode adicionar a lógica para realmente inscrever o usuário na newsletter
+  userStore.subscribeToNewsletter(emailSubscribe.value)
 };
 </script>
 
@@ -302,6 +322,11 @@ const subscribeNewsletter = () => {
   display: inline-block;
   position: relative;
   font-size: 16px;
+  transform-origin: center;
+}
+
+.fa-paper-plane {
+  transform: rotate(-15deg);
 }
 
 .footer-bottom {

@@ -181,6 +181,30 @@ export const useUserStore = defineStore('user', {
       return this.user.name ;
     },
 
+    async subscribeToNewsletter(userEmail) {
+      if (!userEmail || !this.token) return false;
+
+      let userId = this.user.id || null;
+      if (!userId) {
+        console.error('ID do usuário não encontrado');
+        return false;
+      }
+
+      try {
+        const response = await api.post('/api/account/subscribe', { userEmail, userId }, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error('Erro ao inscrever usuário:', error);
+        return false;
+      }
+    },
+
     async getUserImage(){
       if (!this.user.id || !this.token) return;
 
