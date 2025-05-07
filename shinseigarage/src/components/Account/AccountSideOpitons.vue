@@ -72,6 +72,12 @@ const menuOptions = [
     icon: ['fas', 'user']
   },
   { 
+    label: 'NewsLetter',
+    path: '/newsletter',
+    icon: ['fas', 'mail-bulk']
+
+  },
+  { 
     label: 'Configurações', 
     path: '/settings', 
     icon: ['fas', 'cog']
@@ -187,6 +193,7 @@ const HandleLogout = () => {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
 
 .user-info {
@@ -253,7 +260,7 @@ const HandleLogout = () => {
 
 .menu-option.active {
   background-color: #333;
-  border-left: 3px solid #fff;
+  border-left: 3px solid #fff !important;
 }
 
 .option-icon {

@@ -98,7 +98,7 @@ const handleKeyPress = (event) => {
 
 document.addEventListener('keydown', handleKeyPress);
 
-const subscribeNewsletter = () => {
+const subscribeNewsletter = async () => {
   if (!emailSubscribe.value) {
     toast.error('Por favor, insira um e-mail válido.');
     return;
@@ -129,7 +129,17 @@ const subscribeNewsletter = () => {
       }, 2000);
     }, 100);
   }, 500);
-  userStore.subscribeToNewsletter(emailSubscribe.value)
+  
+  try {
+  let response = await userStore.subscribeToNewsletter(emailSubscribe.value);
+  toast.success(response.message);
+  emailSubscribe.value = '';
+} catch (error) {
+  toast.error(error.message || 'Erro ao se inscrever na newsletter.');
+  console.error(error);
+  emailSubscribe.value = '';
+}
+
 };
 </script>
 

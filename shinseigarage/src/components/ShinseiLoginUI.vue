@@ -618,7 +618,7 @@ body {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(250, 250, 250, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.568);
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;

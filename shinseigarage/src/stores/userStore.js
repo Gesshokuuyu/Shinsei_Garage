@@ -191,7 +191,7 @@ export const useUserStore = defineStore('user', {
       }
 
       try {
-        const response = await api.post('/api/account/subscribe', { userEmail, userId }, {
+        const response = await api.post('/api/account/subscribeNewsletter', { userEmail, userId }, {
           headers: {
             Authorization: `Bearer ${this.token}`,
             'Content-Type': 'application/json'
@@ -201,7 +201,8 @@ export const useUserStore = defineStore('user', {
         return response.data;
       } catch (error) {
         console.error('Erro ao inscrever usuário:', error);
-        return false;
+        const message = error.response?.data?.error || 'Erro desconhecido ao inscrever usuário';
+        throw new Error(message);
       }
     },
 

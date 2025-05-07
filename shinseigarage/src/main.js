@@ -143,7 +143,8 @@ import {
   faSync,
   faSpinner,
   faTag,
-  faTags
+  faTags,
+  faMailBulk
 
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -266,7 +267,10 @@ library.add(
   faSync,
   faSpinner,
   faTag,
-  faTags
+  faTags,
+  faUserCircle,
+  faMailBulk
+
 );
 
 const app = createApp(App)
