@@ -1,223 +1,163 @@
 <template>
-    <ShinseiHeader/>
-    <div class="car-showcase-container">
-      <h1 class="page-title">Nossos Veículos</h1>
-      <carCard  :car="{
-      name: 'Model S',
-      brand: 'Tesla',
-      price: 350000,
-      year: 2023,
-      imageUrl: carImg,
-      mileage: 15000
-    }"
-    @view-details="handleDetails"/>
-
-    
-      
-  
-      
+  <div class="page-container">
+    <div class="header">
+      <ShinseiHeader/>
     </div>
-  </template>
-  
-  <script setup>
-//   import { ref, computed } from 'vue'
-  import ShinseiHeader from '@/components/ShinseiHeader.vue'
-  import carCard from '@/components/cards/carCard.vue'
-  import carImg from '../assets/imgs/nsx.png'
-  
-//   const cars = ref([
-//     {
-//       id: 1,
-//       name: 'Sportback Elegance',
-//       brand: 'Audi',
-//       category: 'Sedan',
-//       engine: '2.0 TFSI',
-//       speed: 240,
-//       price: 250000,
-//       image: '/api/placeholder/400/250'
-//     },
-//     {
-//       id: 2,
-//       name: 'M3 Competition',
-//       brand: 'BMW',
-//       category: 'Esportivo',
-//       engine: '3.0 Biturbo',
-//       speed: 290,
-//       price: 350000,
-//       image: '/api/placeholder/400/250'
-//     },
-//     {
-//       id: 3,
-//       name: 'AMG GT',
-//       brand: 'Mercedes',
-//       category: 'Esportivo',
-//       engine: '4.0 V8',
-//       speed: 315,
-//       price: 450000,
-//       image: '/api/placeholder/400/250'
-//     },
-//     {
-//       id: 4,
-//       name: 'Cayenne Turbo',
-//       brand: 'Porsche',
-//       category: 'SUV',
-//       engine: '4.0 V8',
-//       speed: 270,
-//       price: 380000,
-//       image: '/api/placeholder/400/250'
-//     },
-//     {
-//       id: 5,
-//       name: 'F-Type R',
-//       brand: 'Jaguar',
-//       category: 'Conversível',
-//       engine: '5.0 V8',
-//       speed: 300,
-//       price: 420000,
-//       image: '/api/placeholder/400/250'
-//     }
-//   ])
-  
-//   const selectedBrand = ref('')
-//   const selectedCategory = ref('')
-  
-//   const uniqueBrands = computed(() => {
-//     return [...new Set(cars.value.map(car => car.brand))]
-//   })
-  
-//   const uniqueCategories = computed(() => {
-//     return [...new Set(cars.value.map(car => car.category))]
-//   })
-  
-//   const filteredCars = computed(() => {
-//     return cars.value.filter(car => {
-//       const brandMatch = !selectedBrand.value || car.brand === selectedBrand.value
-//       const categoryMatch = !selectedCategory.value || car.category === selectedCategory.value
-//       return brandMatch && categoryMatch
-//     })
-//   })
-  
-//   const formatPrice = (price) => {
-//     return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-//   }
-  </script>
-  
-  <style scoped>
-  .car-showcase-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+    <main class="main-content">
+      <div class="cars-grid">
+        <CarCard 
+          v-for="car in cars" 
+          :key="car.id"
+          :car="car"
+          @view-details="handleViewDetails"
+        />
+      </div>
+    </main>
+  </div>
+  <FooterComponent/>
+</template>
+
+<script setup>
+import CarCard from '@/components/Cars/carCard.vue';
+import FooterComponent from '../components/FooterComponent.vue';
+import ShinseiHeader from '../components/ShinseiHeader.vue';
+import { ref } from 'vue';
+
+// Dados de exemplo para demonstração
+const cars = ref([
+  {
+    id: 1,
+    name: 'BMW X5 M Sport',
+    year: 2023,
+    price: 450000,
+    mileage: 15000,
+    location: 'São Paulo, SP',
+    image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop'
+  },
+  {
+    id: 2,
+    name: 'Mercedes-Benz GLE',
+    year: 2022,
+    price: 380000,
+    mileage: 25000,
+    location: 'Rio de Janeiro, RJ',
+    image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=400&h=300&fit=crop'
+  },
+  {
+    id: 3,
+    name: 'Audi Q7 Quattro',
+    year: 2023,
+    price: 420000,
+    mileage: 18000,
+    location: 'Belo Horizonte, MG',
+    image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop'
+  },
+  {
+    id: 4,
+    name: 'Porsche Macan',
+    year: 2024,
+    price: 520000,
+    mileage: 8000,
+    location: 'Curitiba, PR',
+    image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=300&fit=crop'
+  },
+  {
+    id: 5,
+    name: 'Range Rover Evoque',
+    year: 2022,
+    price: 350000,
+    mileage: 32000,
+    location: 'Brasília, DF',
+    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop'
+  },
+  {
+    id: 6,
+    name: 'Volvo XC90',
+    year: 2023,
+    price: 390000,
+    mileage: 22000,
+    location: 'Porto Alegre, RS',
+    image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop'
   }
-  
-  .page-title {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2.5rem;
-    color: #ebebeb;
-  }
-  
-  .filter-section {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .filter-group label {
-    font-weight: bold;
-  }
-  
-  .filter-group select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
+]);
+
+const handleViewDetails = (car) => {
+  console.log('Ver detalhes do carro:', car);
+  // Aqui você pode implementar a navegação para a página de detalhes
+};
+</script>
+
+<style scoped>
+.page-container *, 
+.main-content *, 
+main * {
+  border: none !important;
+  outline: none !important;
+}
+
+.page-container {
+  position: relative;
+  min-height: 100vh;
+  border: none;
+}
+
+.main-content {
+  padding: 40px 20px;
+  margin-top: 10vh;
+}
+
+.cars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Breakpoints para responsividade */
+@media (min-width: 1200px) {
   .cars-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
   }
   
-  .car-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  .main-content {
+    padding: 60px 40px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .cars-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
   
-  .car-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+  .main-content {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cars-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0 10px;
   }
   
-  .car-image-container {
-    height: 200px;
-    overflow: hidden;
+  .main-content {
+    padding: 20px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cars-grid {
+    gap: 20px;
+    padding: 0 5px;
   }
   
-  .car-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .main-content {
+    padding: 20px 10px;
   }
-  
-  .car-details {
-    padding: 1rem;
-  }
-  
-  .car-name {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: #333;
-  }
-  
-  .car-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    color: #666;
-  }
-  
-  .car-specs {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  
-  .spec {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .car-price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .details-button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .details-button:hover {
-    background-color: #2980b9;
-  }
-  </style>
+}
+</style>

@@ -145,7 +145,7 @@ const subscribeNewsletter = async () => {
 
 <style scoped>
 .main-footer {
-  background-color: rgb(0, 0, 0);
+  background: linear-gradient(to bottom, #000000b4, #000);
   color: #ffffff;
   padding: 3rem 0 0 0;
   margin-top: auto;

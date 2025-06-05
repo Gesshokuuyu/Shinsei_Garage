@@ -40,8 +40,6 @@ body{
 }
 
 * {
-  border: none !important;
-  outline: none !important;
   scrollbar-width: thin;
   scrollbar-color: rgb(0, 0, 0) rgba(0, 0, 0, 0.801);
 }

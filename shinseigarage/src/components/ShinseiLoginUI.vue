@@ -15,7 +15,7 @@
         </router-link>
       </transition>
       </div>
-    <form @submit.prevent="validateForm" class="signupForm">
+    <form @submit.prevent="Login" class="signupForm">
       <h2 class="form-title">Login</h2>
       <ul class="noBullet">
         <li class="inputContainer">
@@ -75,7 +75,6 @@
             id="login-btn"
             class="submit-btn"
             :class="{ 'btn-loading': isLoading }"
-            @click="Login()"
             :disabled="isLoading || !isFormValid"
           >
             <span v-if="!isLoading">Login</span>
@@ -177,9 +176,6 @@ export default {
         issueArr.push("Deve conter uma letra maiúscula");
       } 
       
-      // Força da senha
-      
-      
       const passwordField = document.getElementById("password");
       if (issueArr.length > 0) {
         this.errorMessages.password = issueArr.join(", ");
@@ -224,13 +220,14 @@ export default {
         return;
       }
 
+      // Definir isLoading como true ANTES de criar o overlay
+      this.isLoading = true;
+
       const loginData = {
         email: this.email.trim(),
         password: this.password,
         userName: this.username.trim()
       };
-
-      this.isLoading = true;
 
       const createLoadingOverlay = () => {
         const overlay = document.createElement('div');
@@ -295,36 +292,38 @@ export default {
         this.isLoading = false;
         this.clearSensitiveData();
       }
-  },
+    },
 
-clearSensitiveData() {
-  this.password = '';
-  this.email = '';
-  this.username = '';
-},
-handleLoginError(error) {
-  if (error.response) {
-    switch (error.response.status) {
-      case 401:
-        return 'Credenciais inválidas. Verifique seu email e senha.';
-      case 403:
-        return 'Acesso negado. Verifique suas permissões.';
-      case 404:
-        return 'Serviço de login não encontrado.';
-      case 500:
-        return 'Erro interno do servidor. Tente novamente mais tarde.';
-      default:
-        return error.response.data.message || 'Erro no login. Tente novamente.';
-    }
-  } else if (error.request) {
-    return 'Sem resposta do servidor. Verifique sua conexão de internet.';
-  } else {
-    return 'Erro ao processar o login. Tente novamente.';
-  }
-},
-handlePostLoginRedirect() {
-    this.$router.push('/home');
-},
+    clearSensitiveData() {
+      this.password = '';
+      this.email = '';
+      this.username = '';
+    },
+    
+    handleLoginError(error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+            return 'Credenciais inválidas. Verifique seu email e senha.';
+          case 403:
+            return 'Acesso negado. Verifique suas permissões.';
+          case 404:
+            return 'Serviço de login não encontrado.';
+          case 500:
+            return 'Erro interno do servidor. Tente novamente mais tarde.';
+          default:
+            return error.response.data.message || 'Erro no login. Tente novamente.';
+        }
+      } else if (error.request) {
+        return 'Sem resposta do servidor. Verifique sua conexão de internet.';
+      } else {
+        return 'Erro ao processar o login. Tente novamente.';
+      }
+    },
+    
+    handlePostLoginRedirect() {
+      this.$router.push('/home');
+    },
     
     showNotificationMessage(message, type) {
       this.notificationMessage = message;
@@ -479,7 +478,6 @@ body {
   font-size: 12px;
   color: rgb(202, 202, 202);
   font-weight: 600;
-  /* margin-left: -50px; */
 }
 
 .inputFields {
@@ -622,6 +620,26 @@ body {
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #info-btn {

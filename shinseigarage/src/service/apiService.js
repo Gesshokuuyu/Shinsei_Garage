@@ -35,5 +35,4 @@ export const apiService = {
     }
   },
 
-  // você pode ir adicionando mais funções aqui...
 };
