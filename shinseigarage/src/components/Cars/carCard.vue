@@ -70,7 +70,7 @@ const handleImageError = (event) => {
 <style scoped>
 .car-card {
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  border-radius: 12px;
+  border-radius: 2px;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.08),
     0 2px 8px rgba(0, 0, 0, 0.04);
@@ -84,13 +84,13 @@ const handleImageError = (event) => {
 .car-card:hover {
   transform: translateY(-8px);
   box-shadow: 
-    0 20px 40px rgba(202, 202, 202, 0.315),
-    0 8px 16px rgba(117, 117, 117, 0.253);
+    0 20px 40px rgba(202, 202, 202, 0.089),
+    0 8px 16px rgba(117, 117, 117, 0.068);
 }
 
 .image-container {
   position: relative;
-  height: 240px;
+  height: 270px;
   overflow: hidden;
 }
 

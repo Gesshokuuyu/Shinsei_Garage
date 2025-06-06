@@ -4,6 +4,19 @@
       <ShinseiHeader/>
     </div>
     <main class="main-content">
+      <div class="filters-grid">
+        <h1 class="filters-title">Carros em Destaque</h1>
+        <p class="filters-description">
+          Navegue por nossa seleção de carros premium e encontre o veículo perfeito para você.
+        </p>
+        <div class="filters-options">
+          <button class="filter-button">Todos</button>
+          <button class="filter-button">SUVs</button>
+          <button class="filter-button">Sedans</button>
+          <button class="filter-button">Hatchbacks</button>
+          <button class="filter-button">Elétricos</button>
+        </div>
+      </div>
       <div class="cars-grid">
         <CarCard 
           v-for="car in cars" 
@@ -83,7 +96,6 @@ const cars = ref([
 
 const handleViewDetails = (car) => {
   console.log('Ver detalhes do carro:', car);
-  // Aqui você pode implementar a navegação para a página de detalhes
 };
 </script>
 
@@ -103,19 +115,61 @@ main * {
 
 .main-content {
   padding: 40px 20px;
-  margin-top: 10vh;
+  margin-top: 6vh;
 }
 
 .cars-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 32px;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 70vw;
+  margin-left: 18vw ;
   padding: 0 20px;
 }
 
-/* Breakpoints para responsividade */
+.filters-grid {
+  margin-top: auto;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: left;
+  max-width: 18vw;  
+}
+
+.filters-title {
+  font-size: 3rem;
+  color: #ebe9e9;
+  word-break: break-word;
+}
+
+.filters-description {
+  font-size: 0.9rem;
+  max-width: 12vw;
+  text-align: justify;
+  text-wrap: balance;
+  color: #c0c0c0;
+}
+
+.filters-options{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  max-width: 7vw;
+}
+
+.filter-button {
+  background-color: #ffffff00;
+  color: #ffffff;
+  border: 1px solid #ffffff !important;
+  padding: 7px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+
 @media (min-width: 1200px) {
   .cars-grid {
     grid-template-columns: repeat(3, 1fr);
